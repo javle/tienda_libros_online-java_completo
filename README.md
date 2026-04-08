@@ -1,4 +1,4 @@
-# Tienda de Libros Online - versión completa
+# Tienda de Libros Online 
 
 Proyecto Spring Boot con una versión más completa del sistema, incluyendo:
 
