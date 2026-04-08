@@ -7,35 +7,45 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         :root{
-            --bg:#0f172a;
-            --card:#111827;
-            --card-2:#1f2937;
-            --muted:#94a3b8;
+            --bg:#08111f;
+            --panel:#0f172a;
+            --panel-soft:#111827;
+            --border:rgba(255,255,255,.06);
             --text:#f8fafc;
+            --muted:#94a3b8;
             --accent:#22c55e;
-            --accent-2:#16a34a;
-            --border:#334155;
-            --chip:#1e293b;
-            --shadow:0 12px 28px rgba(0,0,0,.25);
+            --accent-dark:#16a34a;
+            --chip:#162033;
+            --shadow:0 12px 30px rgba(0,0,0,.28);
         }
-        *{box-sizing:border-box}
+
+        *{
+            box-sizing:border-box;
+        }
+
         body{
             margin:0;
             font-family:Arial, Helvetica, sans-serif;
-            background:linear-gradient(180deg,#0b1120 0%, #0f172a 100%);
+            background:linear-gradient(180deg,#07101d 0%, #0b1120 100%);
             color:var(--text);
         }
-        a{text-decoration:none;color:inherit}
+
+        a{
+            text-decoration:none;
+            color:inherit;
+        }
+
         .topbar{
             position:sticky;
             top:0;
             z-index:100;
-            background:rgba(15,23,42,.92);
-            backdrop-filter:blur(8px);
-            border-bottom:1px solid rgba(255,255,255,.06);
+            background:rgba(8,17,31,.92);
+            backdrop-filter:blur(10px);
+            border-bottom:1px solid var(--border);
         }
+
         .topbar-inner{
-            max-width:1200px;
+            max-width:1280px;
             margin:0 auto;
             padding:16px 20px;
             display:flex;
@@ -44,11 +54,15 @@
             gap:16px;
             flex-wrap:wrap;
         }
+
         .brand{
-            font-size:1.2rem;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-size:1.25rem;
             font-weight:700;
-            letter-spacing:.4px;
         }
+
         .nav-links,
         .nav-actions{
             display:flex;
@@ -56,20 +70,22 @@
             gap:12px;
             flex-wrap:wrap;
         }
+
         .nav-link{
-            color:#e2e8f0;
+            color:#e5e7eb;
             padding:8px 12px;
             border-radius:10px;
             transition:.2s ease;
         }
+
         .nav-link:hover{
             background:rgba(255,255,255,.06);
         }
+
         .btn{
             display:inline-flex;
             align-items:center;
             justify-content:center;
-            gap:8px;
             padding:10px 14px;
             border:none;
             border-radius:12px;
@@ -77,231 +93,191 @@
             font-weight:700;
             transition:.2s ease;
         }
+
         .btn-primary{
             background:var(--accent);
             color:#052e16;
         }
+
         .btn-primary:hover{
-            background:var(--accent-2);
-            color:white;
+            background:var(--accent-dark);
+            color:#fff;
         }
+
         .btn-secondary{
-            background:rgba(255,255,255,.06);
-            color:white;
-            border:1px solid rgba(255,255,255,.08);
-        }
-        .btn-secondary:hover{
-            background:rgba(255,255,255,.12);
-        }
-        .hero{
-            max-width:1200px;
-            margin:0 auto;
-            padding:36px 20px 20px;
-            display:grid;
-            grid-template-columns:1.4fr .8fr;
-            gap:24px;
-        }
-        .hero-card,
-        .side-card{
-            background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-            border:1px solid rgba(255,255,255,.08);
-            border-radius:24px;
-            box-shadow:var(--shadow);
-        }
-        .hero-card{
-            padding:30px;
-        }
-        .hero-card h1{
-            margin:0 0 12px;
-            font-size:2.3rem;
-            line-height:1.1;
-        }
-        .hero-card p{
-            margin:0 0 18px;
-            color:var(--muted);
-            font-size:1.05rem;
-        }
-        .hero-actions{
-            display:flex;
-            gap:12px;
-            flex-wrap:wrap;
-            margin-top:18px;
-        }
-        .hero-stats{
-            margin-top:24px;
-            display:grid;
-            grid-template-columns:repeat(3,1fr);
-            gap:12px;
-        }
-        .stat{
             background:rgba(255,255,255,.04);
-            border:1px solid rgba(255,255,255,.06);
-            border-radius:18px;
-            padding:16px;
+            color:#fff;
+            border:1px solid var(--border);
         }
-        .stat strong{
-            font-size:1.3rem;
-            display:block;
-            margin-bottom:6px;
+
+        .btn-secondary:hover{
+            background:rgba(255,255,255,.08);
         }
-        .stat span{
-            color:var(--muted);
-            font-size:.92rem;
+
+        .user-badge{
+            padding:8px 12px;
+            border-radius:999px;
+            background:rgba(255,255,255,.05);
+            border:1px solid var(--border);
+            color:#e5e7eb;
         }
-        .side-card{
-            padding:24px;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-        }
-        .side-card h3{
-            margin:0 0 10px;
-            font-size:1.25rem;
-        }
-        .side-card p{
-            margin:0;
-            color:var(--muted);
-            line-height:1.6;
-        }
-        .container{
-            max-width:1200px;
+
+        .page{
+            max-width:1280px;
             margin:0 auto;
-            padding:10px 20px 50px;
+            padding:24px 20px 48px;
         }
-        .section-head{
+
+        .toolbar{
             display:flex;
             align-items:center;
             justify-content:space-between;
             gap:16px;
             flex-wrap:wrap;
-            margin:26px 0 14px;
-        }
-        .section-head h2{
-            margin:0;
-            font-size:1.6rem;
-        }
-        .section-head p{
-            margin:0;
-            color:var(--muted);
-        }
-        .chips{
-            display:flex;
-            gap:10px;
-            flex-wrap:wrap;
             margin-bottom:22px;
         }
+
+        .toolbar-left{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .toolbar-label{
+            color:var(--muted);
+            font-size:.95rem;
+            margin-right:4px;
+        }
+
         .chip{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
             padding:10px 14px;
             border-radius:999px;
             background:var(--chip);
-            color:#e2e8f0;
             border:1px solid var(--border);
+            color:#e5e7eb;
+            font-size:.94rem;
             transition:.2s ease;
-            font-size:.95rem;
         }
+
         .chip:hover{
-            background:#334155;
+            background:#1d2940;
         }
+
         .chip.active{
             background:var(--accent);
             color:#052e16;
             border-color:transparent;
             font-weight:700;
         }
+
+        .toolbar-right{
+            color:var(--muted);
+            font-size:.95rem;
+        }
+
         .books-grid{
             display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-            gap:18px;
+            grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+            gap:22px;
         }
+
         .book-card{
-            background:var(--card);
-            border:1px solid rgba(255,255,255,.06);
+            background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+            border:1px solid var(--border);
             border-radius:22px;
             overflow:hidden;
             box-shadow:var(--shadow);
             transition:transform .18s ease, border-color .18s ease;
         }
+
         .book-card:hover{
             transform:translateY(-4px);
-            border-color:rgba(34,197,94,.55);
+            border-color:rgba(34,197,94,.45);
         }
+
         .book-image{
             width:100%;
-            height:280px;
+            height:310px;
             object-fit:cover;
-            background:#0b1220;
             display:block;
+            background:#0f172a;
         }
+
         .book-body{
             padding:16px;
         }
+
         .book-category{
             display:inline-block;
+            margin-bottom:10px;
             padding:6px 10px;
             border-radius:999px;
             background:rgba(34,197,94,.12);
             color:#86efac;
             font-size:.8rem;
             font-weight:700;
-            margin-bottom:10px;
         }
+
         .book-title{
-            margin:0 0 6px;
-            font-size:1.05rem;
-            min-height:48px;
+            margin:0 0 8px;
+            font-size:1.02rem;
+            line-height:1.35;
+            min-height:46px;
         }
+
         .book-author{
-            margin:0 0 10px;
+            margin:0 0 12px;
             color:var(--muted);
-            font-size:.92rem;
+            font-size:.93rem;
+            min-height:20px;
         }
+
         .book-price{
-            font-size:1.15rem;
+            margin:0 0 14px;
+            font-size:1.12rem;
             font-weight:800;
-            margin-bottom:12px;
+            color:#f8fafc;
         }
-        .book-meta{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:12px;
-            color:var(--muted);
-            font-size:.9rem;
-            margin-bottom:14px;
-        }
+
         .book-actions{
             display:flex;
             gap:10px;
         }
+
         .book-actions form{
             flex:1;
             margin:0;
         }
+
         .book-actions button,
         .book-actions a{
             width:100%;
         }
+
         .empty-state{
-            padding:28px;
+            padding:30px;
             border-radius:22px;
-            background:var(--card);
-            border:1px solid rgba(255,255,255,.06);
-            color:var(--muted);
+            background:rgba(255,255,255,.03);
+            border:1px solid var(--border);
             text-align:center;
+            color:var(--muted);
         }
-        .user-badge{
-            padding:8px 12px;
-            border-radius:999px;
-            background:rgba(255,255,255,.05);
-            color:#e2e8f0;
-            border:1px solid rgba(255,255,255,.06);
-        }
-        @media (max-width: 900px){
-            .hero{
-                grid-template-columns:1fr;
+
+        @media (max-width: 768px){
+            .page{
+                padding-top:18px;
             }
-            .hero-stats{
-                grid-template-columns:1fr;
+
+            .book-image{
+                height:270px;
+            }
+
+            .toolbar{
+                align-items:flex-start;
             }
         }
     </style>
@@ -310,7 +286,10 @@
 
 <header class="topbar">
     <div class="topbar-inner">
-        <a class="brand" th:href="@{/}">📚 Libros Online</a>
+        <a class="brand" th:href="@{/}">
+            <span>📚</span>
+            <span>Libros Online</span>
+        </a>
 
         <nav class="nav-links">
             <a class="nav-link" th:href="@{/}">Inicio</a>
@@ -331,85 +310,37 @@
     </div>
 </header>
 
-<section class="hero">
-    <div class="hero-card">
-        <h1>Descubre tu próxima lectura favorita</h1>
-        <p>
-            Explora nuestro catálogo de libros disponibles, filtra por categorías
-            y encuentra títulos para programación, backend, Java y bases de datos.
-        </p>
+<main class="page">
 
-        <div class="hero-actions">
-            <a class="btn btn-primary" th:href="@{/libros}">Ver catálogo completo</a>
-            <a class="btn btn-secondary" th:href="@{/carrito}">Ir al carrito</a>
+    <section class="toolbar">
+        <div class="toolbar-left">
+            <span class="toolbar-label">Categorías:</span>
+
+            <a class="chip"
+               th:href="@{/}"
+               th:classappend="${#strings.isEmpty(categoriaSeleccionada)} ? ' active' : ''">
+                Todas
+            </a>
+
+            <a class="chip"
+               th:each="cat : ${categorias}"
+               th:text="${cat}"
+               th:href="@{/(categoria=${cat})}"
+               th:classappend="${#strings.equals(cat, categoriaSeleccionada)} ? ' active' : ''">
+                Categoría
+            </a>
         </div>
 
-        <div class="hero-stats">
-            <div class="stat">
-                <strong th:text="${#lists.size(libros)}">0</strong>
-                <span>Libros visibles</span>
-            </div>
-            <div class="stat">
-                <strong th:text="${#lists.size(categorias)}">0</strong>
-                <span>Categorías</span>
-            </div>
-            <div class="stat">
-                <strong th:text="${cartCount}">0</strong>
-                <span>Productos en carrito</span>
-            </div>
+        <div class="toolbar-right">
+            <span th:text="${#lists.size(libros)} + ' libros disponibles'">0 libros disponibles</span>
         </div>
-    </div>
-
-    <div class="side-card">
-        <h3>Categorías destacadas</h3>
-        <p>
-            Usa el filtro de categorías para navegar más rápido entre los libros
-            disponibles y acceder a una vista más organizada desde la página de inicio.
-        </p>
-    </div>
-</section>
-
-<div class="container">
-    <div class="section-head">
-        <div>
-            <h2>Categorías</h2>
-            <p>Selecciona una categoría para filtrar los libros mostrados en inicio.</p>
-        </div>
-    </div>
-
-    <div class="chips">
-        <a class="chip"
-           th:href="@{/}"
-           th:classappend="${#strings.isEmpty(categoriaSeleccionada)} ? ' active' : ''">
-            Todas
-        </a>
-
-        <a class="chip"
-           th:each="cat : ${categorias}"
-           th:text="${cat}"
-           th:href="@{/(categoria=${cat})}"
-           th:classappend="${#strings.equals(cat, categoriaSeleccionada)} ? ' active' : ''">
-            Categoría
-        </a>
-    </div>
-
-    <div class="section-head">
-        <div>
-            <h2>Libros disponibles</h2>
-            <p th:if="${#strings.isEmpty(categoriaSeleccionada)}">
-                Catálogo visible desde la página principal.
-            </p>
-            <p th:unless="${#strings.isEmpty(categoriaSeleccionada)}">
-                Mostrando categoría: <strong th:text="${categoriaSeleccionada}">Categoría</strong>
-            </p>
-        </div>
-    </div>
+    </section>
 
     <div th:if="${#lists.isEmpty(libros)}" class="empty-state">
         No hay libros disponibles para la categoría seleccionada.
     </div>
 
-    <div class="books-grid" th:unless="${#lists.isEmpty(libros)}">
+    <section class="books-grid" th:unless="${#lists.isEmpty(libros)}">
         <article class="book-card" th:each="libro : ${libros}">
             <img class="book-image" th:src="${libro.imagenPortada}" th:alt="${libro.titulo}">
 
@@ -417,25 +348,20 @@
                 <span class="book-category" th:text="${libro.categoria} ?: 'General'">Categoría</span>
 
                 <h3 class="book-title" th:text="${libro.titulo}">Título del libro</h3>
-                <p class="book-author" th:text="'Autor: ' + ${libro.autor}">Autor</p>
-
-                <div class="book-price" th:text="'$ ' + ${libro.precio}">$ 0</div>
-
-                <div class="book-meta">
-                    <span th:text="'Stock: ' + ${libro.stock}">Stock: 0</span>
-                    <span th:text="${libro.activo} ? 'Disponible' : 'Inactivo'">Disponible</span>
-                </div>
+                <p class="book-author" th:text="${libro.autor}">Autor</p>
+                <p class="book-price" th:text="'$ ' + ${libro.precio}">$ 0</p>
 
                 <div class="book-actions">
                     <form th:action="@{/carrito/agregar/{id}(id=${libro.id})}" method="post">
                         <button class="btn btn-primary" type="submit">Agregar al carrito</button>
                     </form>
-                    <a class="btn btn-secondary" th:href="@{/libros}">Ver más</a>
+                    <a class="btn btn-secondary" th:href="@{/libros}">Ver catálogo</a>
                 </div>
             </div>
         </article>
-    </div>
-</div>
+    </section>
+
+</main>
 
 </body>
 </html>
