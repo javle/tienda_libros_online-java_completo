@@ -1,0 +1,9 @@
+services:
+  db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: zxcvb
+      MARIADB_DATABASE: tienda_libros_online
+    ports:
+      - "3306:3306"

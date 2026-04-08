@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio | Libros Online</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <div class="nav-wrap">
+        <div>
+            <strong>Libros Online</strong>
+        </div>
+        <nav>
+            <a th:href="@{/}">Inicio</a>
+            <a th:href="@{/libros}">Libros</a>
+            <a th:href="@{/carrito}">Carrito (<span th:text="${cartCount}">0</span>)</a>
+            <a th:href="@{/pedidos}">Pedidos</a>
+            <a th:if="${esAdmin}" th:href="@{/admin}">Admin</a>
+            <a th:if="${usuarioSesion == null}" th:href="@{/login}">Iniciar sesión</a>
+            <a th:if="${usuarioSesion == null}" th:href="@{/registro}">Registro</a>
+            <a th:if="${usuarioSesion != null}" th:href="@{/logout}">Salir</a>
+        </nav>
+    </div>
+</header>
+<div class="container">
+    <div th:if="${mensajeExito}" class="alert-ok" th:text="${mensajeExito}"></div>
+    <div th:if="${mensajeError}" class="alert-error" th:text="${mensajeError}"></div>
+
+    <div class="card hero">
+        <h1>Tienda de Libros Online</h1>
+        <p class="muted">Proyecto Spring Boot con autenticación, catálogo, carrito, pedidos y panel administrativo.</p>
+        <p th:if="${usuarioSesion != null}">Sesión actual: <strong th:text="${usuarioSesion.nombre}"></strong> (<span th:text="${usuarioSesion.rol}"></span>)</p>
+        <a class="btn" th:href="@{/libros}">Ver catálogo</a>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <h2>Módulo de autenticación</h2>
+            <p>Permite registro, inicio y cierre de sesión.</p>
+            <span class="badge">/login</span>
+            <span class="badge">/registro</span>
+        </div>
+        <div class="card">
+            <h2>Módulo catálogo de libros</h2>
+            <p>Consulta de libros activos y búsqueda por título o autor.</p>
+            <span class="badge">/libros</span>
+        </div>
+        <div class="card">
+            <h2>Módulo carrito</h2>
+            <p>Agrega libros, actualiza cantidades y genera pedidos.</p>
+            <span class="badge">/carrito</span>
+        </div>
+        <div class="card">
+            <h2>Módulo pedidos</h2>
+            <p>Visualiza los pedidos generados por el usuario.</p>
+            <span class="badge">/pedidos</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Libros destacados</h2>
+        <div class="grid grid-2">
+            <div class="card" th:each="libro : ${librosDestacados}">
+                <h3 th:text="${libro.titulo}"></h3>
+                <p class="muted" th:text="${libro.autor}"></p>
+                <p th:text="${libro.descripcion}"></p>
+                <p class="price" th:text="${'$ ' + #numbers.formatDecimal(libro.precio, 0, 'COMMA', 0, 'POINT')}"></p>
+                <form th:action="@{'/carrito/agregar/' + ${libro.id}}" method="post">
+                    <button type="submit">Agregar al carrito</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
