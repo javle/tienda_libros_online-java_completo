@@ -3,54 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedidos | Libros Online</title>
+    <title>Catálogo | Libros Online</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        :root{
+            --bg:#08111f;
+            --panel:#0f172a;
+            --border:rgba(255,255,255,.06);
+            --text:#f8fafc;
+            --muted:#94a3b8;
+            --accent:#22c55e;
+            --accent-dark:#16a34a;
+            --shadow:0 12px 30px rgba(0,0,0,.28);
+        }
+
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            font-family:Arial, Helvetica, sans-serif;
+            background:linear-gradient(180deg,#07101d 0%, #0b1120 100%);
+            color:var(--text);
+        }
+
+        a{
+            text-decoration:none;
+            color:inherit;
+        }
+
+        .topbar{
+            position:sticky;
+            top:0;
+            z-index:100;
+            background:rgba(8,17,31,.92);
+            backdrop-filter:blur(10px);
+            border-bottom:1px solid var(--border);
+        }
+
+        .topbar-inner{
+            max-width:1280px;
+            margin:0 auto;
+            padding:16px 20px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            flex-wrap:wrap;
+        }
+
+        .brand{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-size:1.25rem;
+            font-weight:700;
+        }
+
+        .nav-links,
+        .nav-actions{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            flex-wrap:wrap;
+        }
+
+        .nav-link{
+            color:#e5e7eb;
+            padding:8px 12px;
+            border-radius:10px;
+            transition:.2s ease;
+        }
+
+        .nav-link:hover{
+            background:rgba(255,255,255,.06);
+        }
+
+        .btn{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            padding:10px 14px;
+            border:none;
+            border-radius:12px;
+            cursor:pointer;
+            font-weight:700;
+            transition:.2s ease;
+        }
+
+        .btn-primary{
+            background:var(--accent);
+            color:#052e16;
+        }
+
+        .btn-primary:hover{
+            background:var(--accent-dark);
+            color:#fff;
+        }
+
+        .btn-secondary{
+            background:rgba(255,255,255,.04);
+            color:#fff;
+            border:1px solid var(--border);
+        }
+
+        .btn-secondary:hover{
+            background:rgba(255,255,255,.08);
+        }
+
+        .user-badge{
+            padding:8px 12px;
+            border-radius:999px;
+            background:rgba(255,255,255,.05);
+            border:1px solid var(--border);
+            color:#e5e7eb;
+        }
+
+        .page{
+            max-width:1280px;
+            margin:0 auto;
+            padding:24px 20px 48px;
+        }
+
+        .catalog-summary{
+            margin-bottom:20px;
+            color:var(--muted);
+            font-size:.95rem;
+        }
+
+        .books-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+            gap:22px;
+        }
+
+        .book-card{
+            background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+            border:1px solid var(--border);
+            border-radius:22px;
+            overflow:hidden;
+            box-shadow:var(--shadow);
+            transition:transform .18s ease, border-color .18s ease;
+        }
+
+        .book-card:hover{
+            transform:translateY(-4px);
+            border-color:rgba(34,197,94,.45);
+        }
+
+        .book-image{
+            width:100%;
+            height:310px;
+            object-fit:cover;
+            display:block;
+            background:#0f172a;
+        }
+
+        .book-body{
+            padding:16px;
+        }
+
+        .book-category{
+            display:inline-block;
+            margin-bottom:10px;
+            padding:6px 10px;
+            border-radius:999px;
+            background:rgba(34,197,94,.12);
+            color:#86efac;
+            font-size:.8rem;
+            font-weight:700;
+        }
+
+        .book-title{
+            margin:0 0 8px;
+            font-size:1.02rem;
+            line-height:1.35;
+            min-height:46px;
+        }
+
+        .book-author{
+            margin:0 0 12px;
+            color:var(--muted);
+            font-size:.93rem;
+            min-height:20px;
+        }
+
+        .book-price{
+            margin:0 0 14px;
+            font-size:1.12rem;
+            font-weight:800;
+            color:#f8fafc;
+        }
+
+        .book-actions{
+            display:flex;
+            gap:10px;
+        }
+
+        .book-actions form{
+            flex:1;
+            margin:0;
+        }
+
+        .book-actions button,
+        .book-actions a{
+            width:100%;
+        }
+
+        .empty-state{
+            padding:30px;
+            border-radius:22px;
+            background:rgba(255,255,255,.03);
+            border:1px solid var(--border);
+            text-align:center;
+            color:var(--muted);
+        }
+
+        @media (max-width: 768px){
+            .book-image{
+                height:270px;
+            }
+        }
+    </style>
 </head>
 <body>
-<header>
-    <div class="nav-wrap">
-        <strong>Libros Online</strong>
-        <nav>
-            <a th:href="@{/}">Inicio</a>
-            <a th:href="@{/libros}">Libros</a>
-            <a th:href="@{/carrito}">Carrito</a>
-            <a th:href="@{/pedidos}">Pedidos</a>
-            <a th:if="${esAdmin}" th:href="@{/admin}">Admin</a>
-        </nav>
-    </div>
-</header>
-<div class="container">
-    <div th:if="${mensajeExito}" class="alert-ok" th:text="${mensajeExito}"></div>
-    <div th:if="${mensajeError}" class="alert-error" th:text="${mensajeError}"></div>
 
-    <div class="card">
-        <h1>Mis pedidos</h1>
-        <div th:if="${#lists.isEmpty(pedidos)}">Aún no has generado pedidos.</div>
-        <div th:each="pedido : ${pedidos}" class="card">
-            <h2>Pedido #<span th:text="${pedido.id}"></span></h2>
-            <p><strong>Fecha:</strong> <span th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}"></span></p>
-            <p><strong>Estado:</strong> <span class="badge" th:text="${pedido.estado}"></span></p>
-            <p><strong>Total:</strong> <span class="price" th:text="${'$ ' + #numbers.formatDecimal(pedido.total, 0, 'COMMA', 0, 'POINT')}"></span></p>
-            <table>
-                <thead>
-                <tr>
-                    <th>Libro</th>
-                    <th>Cantidad</th>
-                    <th>Precio unitario</th>
-                    <th>Subtotal</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="detalle : ${pedido.detalles}">
-                    <td th:text="${detalle.libro.titulo}"></td>
-                    <td th:text="${detalle.cantidad}"></td>
-                    <td th:text="${'$ ' + #numbers.formatDecimal(detalle.precioUnitario, 0, 'COMMA', 0, 'POINT')}"></td>
-                    <td th:text="${'$ ' + #numbers.formatDecimal(detalle.subtotal, 0, 'COMMA', 0, 'POINT')}"></td>
-                </tr>
-                </tbody>
-            </table>
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" th:href="@{/}">
+            <span>📚</span>
+            <span>Libros Online</span>
+        </a>
+
+        <nav class="nav-links">
+            <a class="nav-link" th:href="@{/}">Inicio</a>
+            <a class="nav-link" th:href="@{/}">Catálogo</a>
+            <a class="nav-link" th:href="@{/carrito}">Carrito (<span th:text="${cartCount}">0</span>)</a>
+            <a class="nav-link" th:if="${usuarioSesion != null}" th:href="@{/pedidos}">Pedidos</a>
+            <a class="nav-link" th:if="${esAdmin}" th:href="@{/admin}">Admin</a>
+        </nav>
+
+        <div class="nav-actions">
+            <span class="user-badge" th:if="${usuarioSesion != null}">
+                Hola, <strong th:text="${usuarioSesion.nombre}">Usuario</strong>
+            </span>
+            <a class="btn btn-secondary" th:if="${usuarioSesion == null}" th:href="@{/login}">Iniciar sesión</a>
+            <a class="btn btn-secondary" th:if="${usuarioSesion == null}" th:href="@{/registro}">Registro</a>
+            <a class="btn btn-primary" th:if="${usuarioSesion != null}" th:href="@{/logout}">Salir</a>
         </div>
     </div>
-</div>
+</header>
+
+<main class="page">
+    <div class="catalog-summary">
+        <span th:text="${#lists.size(libros)} + ' libros disponibles'">0 libros disponibles</span>
+    </div>
+
+    <div th:if="${#lists.isEmpty(libros)}" class="empty-state">
+        No hay libros disponibles en este momento.
+    </div>
+
+    <section class="books-grid" th:unless="${#lists.isEmpty(libros)}">
+        <article class="book-card" th:each="libro : ${libros}">
+            <img class="book-image" th:src="${libro.imagenPortada}" th:alt="${libro.titulo}">
+
+            <div class="book-body">
+                <span class="book-category" th:text="${libro.categoria} ?: 'General'">Categoría</span>
+
+                <h3 class="book-title" th:text="${libro.titulo}">Título</h3>
+                <p class="book-author" th:text="${libro.autor}">Autor</p>
+                <p class="book-price" th:text="'$ ' + ${libro.precio}">$ 0</p>
+
+                <div class="book-actions">
+                    <form th:action="@{/carrito/agregar/{id}(id=${libro.id})}" method="post">
+                        <button class="btn btn-primary" type="submit">Agregar al carrito</button>
+                    </form>
+                    <a class="btn btn-secondary" th:href="@{/}">Inicio</a>
+                </div>
+            </div>
+        </article>
+    </section>
+</main>
+
 </body>
 </html>

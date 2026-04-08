@@ -293,7 +293,7 @@
 
         <nav class="nav-links">
             <a class="nav-link" th:href="@{/}">Inicio</a>
-            <a class="nav-link" th:href="@{/libros}">Catálogo</a>
+            <a class="nav-link" th:href="@{/}">Catálogo</a>
             <a class="nav-link" th:href="@{/carrito}">Carrito (<span th:text="${cartCount}">0</span>)</a>
             <a class="nav-link" th:if="${usuarioSesion != null}" th:href="@{/pedidos}">Pedidos</a>
             <a class="nav-link" th:if="${esAdmin}" th:href="@{/admin}">Admin</a>
