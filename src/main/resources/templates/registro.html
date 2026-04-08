@@ -8,13 +8,23 @@
 </head>
 <body>
 <header>
-    <div class="nav-wrap"><strong>Libros Online</strong><nav><a th:href="@{/}">Inicio</a><a th:href="@{/login}">Login</a></nav></div>
+    <div class="nav-wrap">
+        <strong>Libros Online</strong>
+        <nav>
+            <a th:href="@{/}">Inicio</a>
+            <a th:href="@{/login}">Login</a>
+        </nav>
+    </div>
 </header>
+
 <div class="container">
     <div class="card" style="max-width:580px;margin:0 auto;">
         <h1>Registro de usuario</h1>
+
         <div th:if="${mensajeError}" class="alert-error" th:text="${mensajeError}"></div>
-        <form th:action="@{/registro}" th:object="${usuario}" method="post">
+        <div th:if="${mensajeExito}" class="alert-success" th:text="${mensajeExito}"></div>
+
+        <form th:action="@{/registro}" th:object="${registroForm}" method="post">
             <label>Nombre completo</label>
             <input type="text" th:field="*{nombre}" required>
 
@@ -31,5 +41,6 @@
         </form>
     </div>
 </div>
+
 </body>
 </html>

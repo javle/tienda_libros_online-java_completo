@@ -1,7 +1,6 @@
 package com.librosonline.model;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -28,6 +27,9 @@ public class Libro {
     @Lob
     private String descripcion;
 
+    @Column(length = 500)
+    private String imagenUrl;
+
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
@@ -52,6 +54,13 @@ public class Libro {
     @PreUpdate
     public void preUpdate() {
         fechaActualizacion = LocalDateTime.now();
+    }
+
+    @Transient
+    public String getImagenPortada() {
+        return (imagenUrl == null || imagenUrl.isBlank())
+                ? "/img/libro-default.svg"
+                : imagenUrl;
     }
 
     public Long getId() {
@@ -100,6 +109,14 @@ public class Libro {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
     }
 
     public BigDecimal getPrecio() {

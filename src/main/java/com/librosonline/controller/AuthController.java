@@ -23,33 +23,44 @@ public class AuthController {
 
     @GetMapping("/registro")
     public String mostrarRegistro(Model model) {
-        model.addAttribute("usuario", new Usuario());
+        model.addAttribute("registroForm", new Usuario());
         return "registro";
     }
 
     @PostMapping("/registro")
-    public String registrarUsuario(@ModelAttribute("usuario") Usuario usuario, RedirectAttributes redirectAttributes) {
+    public String registrarUsuario(@ModelAttribute("registroForm") Usuario usuario,
+                                   RedirectAttributes redirectAttributes) {
         usuario.setRol(Rol.CLIENTE);
+
         if (usuarioService.registrar(usuario)) {
             redirectAttributes.addFlashAttribute("mensajeExito", "Registro exitoso. Ahora puedes iniciar sesión.");
             return "redirect:/login";
         }
+
         redirectAttributes.addFlashAttribute("mensajeError", "El usuario o correo ya existen.");
         return "redirect:/registro";
     }
 
     @GetMapping("/login")
     public String mostrarLogin(Model model) {
-        model.addAttribute("usuario", new Usuario());
+        model.addAttribute("loginForm", new Usuario());
         return "login";
     }
 
     @PostMapping("/login")
-    public String iniciarSesion(@ModelAttribute("usuario") Usuario usuario, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String iniciarSesion(@ModelAttribute("loginForm") Usuario usuario,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+
         return usuarioService.iniciarSesion(usuario.getUsuario(), usuario.getClave())
                 .map(u -> {
                     session.setAttribute(SessionHelper.USUARIO_SESSION_KEY, u);
                     redirectAttributes.addFlashAttribute("mensajeExito", "Bienvenido, " + u.getNombre() + ".");
+
+                    if (u.getRol() == Rol.ADMIN) {
+                        return "redirect:/admin";
+                    }
+
                     return "redirect:/";
                 })
                 .orElseGet(() -> {

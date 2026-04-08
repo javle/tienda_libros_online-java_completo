@@ -16,7 +16,7 @@
         <div th:if="${mensajeExito}" class="alert-ok" th:text="${mensajeExito}"></div>
         <div th:if="${mensajeError}" class="alert-error" th:text="${mensajeError}"></div>
 
-        <form th:action="@{/login}" th:object="${usuario}" method="post">
+        <form th:action="@{/login}" th:object="${loginForm}" method="post">
             <label>Usuario</label>
             <input type="text" th:field="*{usuario}" required>
 
