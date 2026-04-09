@@ -1,6 +1,6 @@
 # Tienda de Libros Online 
 
-Proyecto Spring Boot con una versión más completa del sistema, incluyendo:
+Proyecto Spring Boot  del sistema, incluyendo:
 
 - Autenticación básica con sesión (`/login`, `/registro`, `/logout`)
 - Catálogo de libros (`/libros`)
