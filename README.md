@@ -37,7 +37,4 @@ docker compose up -d
 
 Luego abre `http://localhost:8080`
 
-## Notas
 
-- La aplicación usa sesiones HTTP simples, sin Spring Security, para facilitar el entendimiento académico.
-- El panel `/admin` solo está disponible para usuarios con rol `ADMIN`.
