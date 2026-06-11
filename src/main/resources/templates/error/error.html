@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error | Libros Online</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body{
+            margin:0;
+            font-family:Arial, Helvetica, sans-serif;
+            background:linear-gradient(180deg,#07101d 0%, #0b1120 100%);
+            color:#f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .error-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .error-title {
+            color: #fca5a5;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .error-desc {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .error-details {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: monospace;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            margin-bottom: 30px;
+            word-wrap: break-word;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #22c55e;
+            color: #052e16;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: #16a34a;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-card">
+        <span class="error-icon">⚠️</span>
+        <h1 class="error-title" th:text="${errorTitle} ?: 'Error'">Error</h1>
+        <p class="error-desc" th:text="${errorDescription} ?: 'Ha ocurrido un problema al procesar tu solicitud.'"></p>
+        
+        <div class="error-details" th:if="${errorDetails != null}">
+            <strong style="display:block;margin-bottom:5px;color:#ef4444;">Detalle técnico:</strong>
+            <span th:text="${errorDetails}"></span>
+        </div>
+
+        <a class="btn" th:href="@{/}">Volver al inicio</a>
+    </div>
+</body>
+</html>

@@ -3,365 +3,411 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | Libros Online</title>
+    <title>Libros Online | Domina tu carrera tecnológica</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         :root{
-            --bg:#08111f;
+            --bg:#050b14;
             --panel:#0f172a;
-            --panel-soft:#111827;
-            --border:rgba(255,255,255,.06);
+            --border:rgba(255,255,255,.08);
             --text:#f8fafc;
             --muted:#94a3b8;
             --accent:#22c55e;
             --accent-dark:#16a34a;
-            --chip:#162033;
+            --glow: rgba(34, 197, 94, 0.4);
             --shadow:0 12px 30px rgba(0,0,0,.28);
         }
 
-        *{
-            box-sizing:border-box;
-        }
+        *{ box-sizing:border-box; }
+        body{ margin:0; font-family:'Inter', Arial, sans-serif; background:var(--bg); color:var(--text); overflow-x: hidden; }
+        a{ text-decoration:none; color:inherit; }
 
-        body{
-            margin:0;
-            font-family:Arial, Helvetica, sans-serif;
-            background:linear-gradient(180deg,#07101d 0%, #0b1120 100%);
-            color:var(--text);
-        }
+        /* Topbar */
+        .topbar{ position:sticky; top:0; z-index:100; background:rgba(5,11,20,.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+        .topbar-inner{ max-width:1280px; margin:0 auto; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap: 16px;}
+        .brand{ display:flex; align-items:center; gap:10px; font-size:1.25rem; font-weight:800; letter-spacing:-0.02em; }
+        .nav-links, .nav-actions{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+        .nav-link{ color:#e5e7eb; padding:8px 12px; border-radius:10px; transition:.2s; font-weight:500;}
+        .nav-link:hover{ background:rgba(255,255,255,.08); color:#fff;}
+        .btn{ display:inline-flex; align-items:center; justify-content:center; padding:12px 20px; border:none; border-radius:12px; cursor:pointer; font-weight:700; transition:.2s ease; }
+        .btn-primary{ background:var(--accent); color:#052e16; box-shadow: 0 0 15px var(--glow); }
+        .btn-primary:hover{ background:var(--accent-dark); transform: translateY(-2px); box-shadow: 0 4px 25px var(--glow); }
+        .btn-secondary{ background:rgba(255,255,255,.05); color:#fff; border:1px solid var(--border); }
+        .btn-secondary:hover{ background:rgba(255,255,255,.1); }
+        .user-badge{ padding:8px 12px; border-radius:999px; background:rgba(255,255,255,.05); border:1px solid var(--border); color:#e5e7eb; }
 
-        a{
-            text-decoration:none;
-            color:inherit;
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding: 40px 20px;
+            overflow: hidden;
         }
-
-        .topbar{
-            position:sticky;
-            top:0;
-            z-index:100;
-            background:rgba(8,17,31,.92);
-            backdrop-filter:blur(10px);
-            border-bottom:1px solid var(--border);
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.15) 0%, transparent 50%);
+            animation: pulseGlow 10s infinite alternate;
+            z-index: -1;
         }
-
-        .topbar-inner{
-            max-width:1280px;
-            margin:0 auto;
-            padding:16px 20px;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:16px;
-            flex-wrap:wrap;
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 1; }
         }
-
-        .brand{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            font-size:1.25rem;
-            font-weight:700;
+        .hero-title { font-size: 4.5rem; font-weight: 900; margin: 0 0 20px; line-height: 1.1; letter-spacing:-0.03em;}
+        .hero-subtitle { font-size: 1.4rem; color: var(--muted); margin: 0 0 40px; max-width: 600px; line-height: 1.5; margin-left: auto; margin-right: auto;}
+        
+        /* Typing Effect */
+        .typing-container { color: var(--accent); position: relative; }
+        .typing-container::after {
+            content: '|';
+            position: absolute; right: -15px; top: 0;
+            animation: blink 1s step-start infinite;
         }
+        @keyframes blink { 50% { opacity: 0; } }
 
-        .nav-links,
-        .nav-actions{
-            display:flex;
-            align-items:center;
-            gap:12px;
-            flex-wrap:wrap;
+        /* Quiz Recommender Section */
+        .quiz-section { max-width: 1000px; margin: 0 auto 80px; padding: 0 20px; text-align: center; }
+        .quiz-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 40px; }
+        .quiz-buttons { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 40px;}
+        .quiz-btn {
+            background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 18px 24px; border-radius: 16px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        .quiz-btn:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(34, 197, 94, 0.15); }
+        .quiz-btn.active { background: rgba(34, 197, 94, 0.1); border-color: var(--accent); color: var(--accent); }
 
-        .nav-link{
-            color:#e5e7eb;
-            padding:8px 12px;
-            border-radius:10px;
-            transition:.2s ease;
+        .recommender-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; text-align: left; opacity:0; transition: opacity 0.5s ease; }
+        .recommender-results.show { opacity: 1; }
+
+        /* Book Card Modern */
+        .book-card {
+            background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+            border: 1px solid var(--border); border-radius: 20px; overflow: hidden; padding: 20px;
+            transition: 0.3s;
         }
+        .book-card:hover { border-color: rgba(34,197,94,.4); transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+        .book-img { width: 100%; height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 16px; background: #1e293b;}
+        .book-cat { color: var(--accent); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block;}
+        .book-title { font-size: 1.25rem; font-weight: 800; margin: 0 0 8px; line-height: 1.3;}
+        .book-author { color: var(--muted); font-size: 0.95rem; margin: 0 0 16px; }
+        .book-price { font-size: 1.5rem; font-weight: 900; margin: 0 0 20px; color: #fff;}
+        .book-actions-dual { display: flex; gap: 10px; }
+        .book-actions-dual button { flex: 2; padding: 12px;}
+        .book-actions-dual a { flex: 1; padding: 12px; text-align: center;}
 
-        .nav-link:hover{
-            background:rgba(255,255,255,.06);
+        /* Social Proof Counters */
+        .stats-section { background: rgba(255,255,255,0.02); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 80px 20px; margin-bottom: 80px;}
+        .stats-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; text-align: center; }
+        .stat-item h4 { font-size: 3.5rem; font-weight: 900; color: var(--accent); margin: 0 0 10px; line-height: 1;}
+        .stat-item p { color: var(--muted); font-size: 1.1rem; font-weight: 500; margin: 0; }
+
+        /* Marquee Testimonials */
+        .testimonials { margin-bottom: 100px; overflow: hidden; white-space: nowrap; position: relative; padding: 20px 0;}
+        .testimonials::before, .testimonials::after {
+            content: ''; position: absolute; top: 0; width: 150px; height: 100%; z-index: 2;
         }
-
-        .btn{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            padding:10px 14px;
-            border:none;
-            border-radius:12px;
-            cursor:pointer;
-            font-weight:700;
-            transition:.2s ease;
+        .testimonials::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+        .testimonials::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+        
+        .marquee-track { display: inline-block; animation: scroll 30s linear infinite; }
+        .marquee-track:hover { animation-play-state: paused; }
+        
+        .testimonial-card {
+            display: inline-block; white-space: normal; vertical-align: top; width: 350px;
+            background: var(--panel); border: 1px solid var(--border); padding: 24px; border-radius: 16px;
+            margin-right: 24px; box-shadow: var(--shadow);
         }
+        .testimonial-text { font-size: 1.05rem; line-height: 1.5; color: #e2e8f0; margin: 0 0 16px; font-style: italic;}
+        .testimonial-author { font-weight: 700; color: var(--accent); margin: 0;}
+        .testimonial-role { color: var(--muted); font-size: 0.85rem; margin: 4px 0 0;}
 
-        .btn-primary{
-            background:var(--accent);
-            color:#052e16;
-        }
-
-        .btn-primary:hover{
-            background:var(--accent-dark);
-            color:#fff;
-        }
-
-        .btn-secondary{
-            background:rgba(255,255,255,.04);
-            color:#fff;
-            border:1px solid var(--border);
-        }
-
-        .btn-secondary:hover{
-            background:rgba(255,255,255,.08);
-        }
-
-        .user-badge{
-            padding:8px 12px;
-            border-radius:999px;
-            background:rgba(255,255,255,.05);
-            border:1px solid var(--border);
-            color:#e5e7eb;
-        }
-
-        .page{
-            max-width:1280px;
-            margin:0 auto;
-            padding:24px 20px 48px;
-        }
-
-        .toolbar{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:16px;
-            flex-wrap:wrap;
-            margin-bottom:22px;
-        }
-
-        .toolbar-left{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            flex-wrap:wrap;
-        }
-
-        .toolbar-label{
-            color:var(--muted);
-            font-size:.95rem;
-            margin-right:4px;
-        }
-
-        .chip{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            padding:10px 14px;
-            border-radius:999px;
-            background:var(--chip);
-            border:1px solid var(--border);
-            color:#e5e7eb;
-            font-size:.94rem;
-            transition:.2s ease;
-        }
-
-        .chip:hover{
-            background:#1d2940;
-        }
-
-        .chip.active{
-            background:var(--accent);
-            color:#052e16;
-            border-color:transparent;
-            font-weight:700;
-        }
-
-        .toolbar-right{
-            color:var(--muted);
-            font-size:.95rem;
-        }
-
-        .books-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
-            gap:22px;
-        }
-
-        .book-card{
-            background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-            border:1px solid var(--border);
-            border-radius:22px;
-            overflow:hidden;
-            box-shadow:var(--shadow);
-            transition:transform .18s ease, border-color .18s ease;
-        }
-
-        .book-card:hover{
-            transform:translateY(-4px);
-            border-color:rgba(34,197,94,.45);
-        }
-
-        .book-image{
-            width:100%;
-            height:310px;
-            object-fit:cover;
-            display:block;
-            background:#0f172a;
-        }
-
-        .book-body{
-            padding:16px;
-        }
-
-        .book-category{
-            display:inline-block;
-            margin-bottom:10px;
-            padding:6px 10px;
-            border-radius:999px;
-            background:rgba(34,197,94,.12);
-            color:#86efac;
-            font-size:.8rem;
-            font-weight:700;
-        }
-
-        .book-title{
-            margin:0 0 8px;
-            font-size:1.02rem;
-            line-height:1.35;
-            min-height:46px;
-        }
-
-        .book-author{
-            margin:0 0 12px;
-            color:var(--muted);
-            font-size:.93rem;
-            min-height:20px;
-        }
-
-        .book-price{
-            margin:0 0 14px;
-            font-size:1.12rem;
-            font-weight:800;
-            color:#f8fafc;
-        }
-
-        .book-actions{
-            display:flex;
-            gap:10px;
-        }
-
-        .book-actions form{
-            flex:1;
-            margin:0;
-        }
-
-        .book-actions button,
-        .book-actions a{
-            width:100%;
-        }
-
-        .empty-state{
-            padding:30px;
-            border-radius:22px;
-            background:rgba(255,255,255,.03);
-            border:1px solid var(--border);
-            text-align:center;
-            color:var(--muted);
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
 
         @media (max-width: 768px){
-            .page{
-                padding-top:18px;
-            }
-
-            .book-image{
-                height:270px;
-            }
-
-            .toolbar{
-                align-items:flex-start;
-            }
+            .hero-title { font-size: 3rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .quiz-btn { width: 100%; }
         }
     </style>
 </head>
 <body>
 
+<!-- Header Global -->
 <header class="topbar">
     <div class="topbar-inner">
         <a class="brand" th:href="@{/}">
             <span>📚</span>
             <span>Libros Online</span>
         </a>
-
         <nav class="nav-links">
             <a class="nav-link" th:href="@{/}">Inicio</a>
-            <a class="nav-link" th:href="@{/}">Catálogo</a>
-            <a class="nav-link" th:href="@{/carrito}">Carrito (<span th:text="${cartCount}">0</span>)</a>
+            <a class="nav-link" th:href="@{/catalogo}">Catálogo</a>
+            <a class="nav-link" th:href="@{/carrito}">Carrito (<span id="cart-counter" th:text="${cartCount}">0</span>)</a>
             <a class="nav-link" th:if="${usuarioSesion != null}" th:href="@{/pedidos}">Pedidos</a>
             <a class="nav-link" th:if="${esAdmin}" th:href="@{/admin}">Admin</a>
         </nav>
-
         <div class="nav-actions">
-            <span class="user-badge" th:if="${usuarioSesion != null}">
-                Hola, <strong th:text="${usuarioSesion.nombre}">Usuario</strong>
-            </span>
+            <span class="user-badge" th:if="${usuarioSesion != null}">Hola, <strong th:text="${usuarioSesion.nombre}">Usuario</strong></span>
             <a class="btn btn-secondary" th:if="${usuarioSesion == null}" th:href="@{/login}">Iniciar sesión</a>
             <a class="btn btn-secondary" th:if="${usuarioSesion == null}" th:href="@{/registro}">Registro</a>
-            <a class="btn btn-primary" th:if="${usuarioSesion != null}" th:href="@{/logout}">Salir</a>
+            <form th:action="@{/logout}" method="post" th:if="${usuarioSesion != null}" style="display:inline; margin:0;">
+                <button type="submit" class="btn btn-primary" style="box-shadow:none;">Salir</button>
+            </form>
         </div>
     </div>
 </header>
 
-<main class="page">
-
-    <section class="toolbar">
-        <div class="toolbar-left">
-            <span class="toolbar-label">Categorías:</span>
-
-            <a class="chip"
-               th:href="@{/}"
-               th:classappend="${#strings.isEmpty(categoriaSeleccionada)} ? ' active' : ''">
-                Todas
-            </a>
-
-            <a class="chip"
-               th:each="cat : ${categorias}"
-               th:text="${cat}"
-               th:href="@{/(categoria=${cat})}"
-               th:classappend="${#strings.equals(cat, categoriaSeleccionada)} ? ' active' : ''">
-                Categoría
-            </a>
-        </div>
-
-        <div class="toolbar-right">
-            <span th:text="${#lists.size(libros)} + ' libros disponibles'">0 libros disponibles</span>
-        </div>
-    </section>
-
-    <div th:if="${#lists.isEmpty(libros)}" class="empty-state">
-        No hay libros disponibles para la categoría seleccionada.
+<!-- Hero Section -->
+<section class="hero">
+    <div style="z-index: 1;">
+        <h1 class="hero-title">Lleva tu carrera al<br>siguiente nivel dominando<br><span class="typing-container" id="typewriter"></span></h1>
+        <p class="hero-subtitle">Descubre la colección curada con los libros técnicos más aclamados del mundo. Diseñado para desarrolladores, arquitectos y líderes tecnológicos.</p>
+        <a th:href="@{/catalogo}" class="btn btn-primary" style="font-size: 1.2rem; padding: 16px 32px; border-radius: 999px;">🚀 Explorar Catálogo Completo</a>
     </div>
+</section>
 
-    <section class="books-grid" th:unless="${#lists.isEmpty(libros)}">
-        <article class="book-card" th:each="libro : ${libros}">
-            <img class="book-image" th:src="${libro.imagenPortada}" th:alt="${libro.titulo}">
+<!-- Interactive Quiz -->
+<section class="quiz-section">
+    <h2 class="quiz-title">¿Qué quieres aprender hoy?</h2>
+    <div class="quiz-buttons">
+        <button class="quiz-btn" onclick="fetchRecomendaciones('DevOps y Cloud', this)">☁️ Dominar la Nube</button>
+        <button class="quiz-btn" onclick="fetchRecomendaciones('Ciberseguridad', this)">🛡️ Blindar mi Código</button>
+        <button class="quiz-btn" onclick="fetchRecomendaciones('Diseño de Sistemas', this)">🧠 Arquitectura y Sistemas</button>
+        <button class="quiz-btn" onclick="fetchRecomendaciones('Habilidades Blandas y Carrera', this)">💼 Crecer como Profesional</button>
+    </div>
+    
+    <div id="recommender-results" class="recommender-results">
+        <!-- Tarjetas dinámicas inyectadas por JS -->
+    </div>
+</section>
 
-            <div class="book-body">
-                <span class="book-category" th:text="${libro.categoria} ?: 'General'">Categoría</span>
+<!-- Animated Social Proof -->
+<section class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <h4 class="counter" data-target="15000">0</h4>
+            <p>Líneas de código limpiadas</p>
+        </div>
+        <div class="stat-item">
+            <h4 class="counter" data-target="30" data-suffix="+">0</h4>
+            <p>Best Sellers Mundiales</p>
+        </div>
+        <div class="stat-item">
+            <h4 class="counter" data-target="4.9" data-decimal="true">0.0</h4>
+            <p>Calificación de Comunidad</p>
+        </div>
+    </div>
+</section>
 
-                <h3 class="book-title" th:text="${libro.titulo}">Título del libro</h3>
-                <p class="book-author" th:text="${libro.autor}">Autor</p>
-                <p class="book-price" th:text="'$ ' + ${libro.precio}">$ 0</p>
+<!-- Infinite Marquee -->
+<section class="testimonials">
+    <!-- Repetimos el track para el scroll infinito suave -->
+    <div class="marquee-track">
+        <div class="testimonial-card">
+            <p class="testimonial-text">"¡Compré 'Designing Data-Intensive Applications' aquí y logré pasar mi entrevista técnica en Amazon! La selección de libros es brutal."</p>
+            <p class="testimonial-author">Carlos Ruiz</p>
+            <p class="testimonial-role">Senior Backend Developer</p>
+        </div>
+        <div class="testimonial-card">
+            <p class="testimonial-text">"El envío fue súper rápido. Leer 'The Phoenix Project' cambió por completo la forma en que mi equipo maneja los despliegues a producción."</p>
+            <p class="testimonial-author">Laura Gómez</p>
+            <p class="testimonial-role">DevOps Engineer</p>
+        </div>
+        <div class="testimonial-card">
+            <p class="testimonial-text">"No sabía qué leer para mejorar mis habilidades blandas hasta que encontré esta tienda. 'Atomic Habits' me hizo mucho más productivo."</p>
+            <p class="testimonial-author">Andrés Felipe</p>
+            <p class="testimonial-role">Tech Lead</p>
+        </div>
+        <div class="testimonial-card">
+            <p class="testimonial-text">"La mejor inversión para mi carrera. Encontré 'Clean Code' a un excelente precio y ahora mi código es mantenible y escalable."</p>
+            <p class="testimonial-author">Diana Martínez</p>
+            <p class="testimonial-role">Full Stack Developer</p>
+        </div>
+        <!-- Duplicados para loop infinito -->
+        <div class="testimonial-card">
+            <p class="testimonial-text">"¡Compré 'Designing Data-Intensive Applications' aquí y logré pasar mi entrevista técnica en Amazon! La selección de libros es brutal."</p>
+            <p class="testimonial-author">Carlos Ruiz</p>
+            <p class="testimonial-role">Senior Backend Developer</p>
+        </div>
+        <div class="testimonial-card">
+            <p class="testimonial-text">"El envío fue súper rápido. Leer 'The Phoenix Project' cambió por completo la forma en que mi equipo maneja los despliegues a producción."</p>
+            <p class="testimonial-author">Laura Gómez</p>
+            <p class="testimonial-role">DevOps Engineer</p>
+        </div>
+        <div class="testimonial-card">
+            <p class="testimonial-text">"No sabía qué leer para mejorar mis habilidades blandas hasta que encontré esta tienda. 'Atomic Habits' me hizo mucho más productivo."</p>
+            <p class="testimonial-author">Andrés Felipe</p>
+            <p class="testimonial-role">Tech Lead</p>
+        </div>
+        <div class="testimonial-card">
+            <p class="testimonial-text">"La mejor inversión para mi carrera. Encontré 'Clean Code' a un excelente precio y ahora mi código es mantenible y escalable."</p>
+            <p class="testimonial-author">Diana Martínez</p>
+            <p class="testimonial-role">Full Stack Developer</p>
+        </div>
+    </div>
+</section>
 
-                <div class="book-actions">
-                    <form th:action="@{/carrito/agregar/{id}(id=${libro.id})}" method="post">
-                        <button class="btn btn-primary" type="submit">Agregar al carrito</button>
-                    </form>
-                    <a class="btn btn-secondary" th:href="@{/libros}">Ver catálogo</a>
-                </div>
-            </div>
-        </article>
-    </section>
+<!-- SCRIPTS -->
+<script>
+// 1. Typing Effect
+const words = ["Clean Code.", "Arquitectura.", "DevOps.", "Ciberseguridad.", "Diseño de Sistemas."];
+let i = 0; let timer;
+function typingEffect() {
+    let word = words[i].split("");
+    var loopTyping = function() {
+        if (word.length > 0) {
+            document.getElementById('typewriter').innerHTML += word.shift();
+        } else {
+            setTimeout(deletingEffect, 2000);
+            return false;
+        }
+        timer = setTimeout(loopTyping, 100);
+    };
+    loopTyping();
+}
+function deletingEffect() {
+    let word = words[i].split("");
+    var loopDeleting = function() {
+        if (word.length > 0) {
+            word.pop();
+            document.getElementById('typewriter').innerHTML = word.join("");
+        } else {
+            i = (i + 1) % words.length;
+            setTimeout(typingEffect, 500);
+            return false;
+        }
+        timer = setTimeout(loopDeleting, 50);
+    };
+    loopDeleting();
+}
+document.addEventListener('DOMContentLoaded', typingEffect);
 
-</main>
+// 2. Interactive Recommender (AJAX)
+async function fetchRecomendaciones(categoria, btnElement) {
+    // UI Update
+    document.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('active'));
+    if(btnElement) btnElement.classList.add('active');
+    
+    const container = document.getElementById('recommender-results');
+    container.classList.remove('show');
+    
+    try {
+        const response = await fetch('/api/recomendaciones?categoria=' + encodeURIComponent(categoria));
+        const libros = await response.json();
+        
+        setTimeout(() => {
+            container.innerHTML = '';
+            libros.forEach(libro => {
+                const imgUrl = libro.imagenUrl ? libro.imagenUrl : '';
+                const formatPrice = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(libro.precio);
+                
+                const card = `
+                    <div class="book-card">
+                        <a href="/catalogo/${libro.id}">
+                            <img src="${imgUrl}" class="book-img" alt="Portada">
+                        </a>
+                        <span class="book-cat">${libro.categoria}</span>
+                        <h3 class="book-title">${libro.titulo}</h3>
+                        <p class="book-author">${libro.autor}</p>
+                        <p class="book-price">${formatPrice}</p>
+                        <div class="book-actions-dual">
+                            <button class="btn btn-primary" onclick="agregarAlCarrito(${libro.id}, this)">Agregar</button>
+                            <a href="/catalogo/${libro.id}" class="btn btn-secondary">Detalles</a>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+            container.classList.add('show');
+        }, 300); // Esperar que termine el fade-out
+    } catch (e) {
+        console.error("Error fetching recomendaciones", e);
+    }
+}
+// Trigger default category
+document.addEventListener('DOMContentLoaded', () => fetchRecomendaciones('Diseño de Sistemas', document.querySelectorAll('.quiz-btn')[2]));
+
+// Fetch Logic for Cart
+async function agregarAlCarrito(libroId, btnElement) {
+    const originalText = btnElement.textContent;
+    btnElement.textContent = '...';
+    btnElement.disabled = true;
+    
+    const formData = new FormData();
+    // Reusing the existing POST endpoint which doesn't need payload body
+    try {
+        const response = await fetch('/carrito/api/agregar/' + libroId, { method: 'POST', body: formData });
+        const data = await response.json();
+        if(data.success) {
+            const counter = document.getElementById('cart-counter');
+            if(counter) {
+                counter.textContent = data.cartCount;
+                counter.style.transform = 'scale(1.3)';
+                setTimeout(() => counter.style.transform = 'scale(1)', 200);
+            }
+            btnElement.textContent = '¡Listo!';
+            btnElement.style.background = '#16a34a';
+            setTimeout(() => {
+                btnElement.textContent = originalText;
+                btnElement.style.background = '';
+                btnElement.disabled = false;
+            }, 1500);
+        }
+    } catch(error) {
+        console.error(error);
+        btnElement.textContent = originalText;
+        btnElement.disabled = false;
+    }
+}
+
+// 3. Animated Social Proof Counters (Intersection Observer)
+const counters = document.querySelectorAll('.counter');
+const observerOptions = { root: null, rootMargin: '0px', threshold: 0.5 };
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseFloat(el.getAttribute('data-target'));
+            const isDecimal = el.getAttribute('data-decimal') === 'true';
+            const suffix = el.getAttribute('data-suffix') || '';
+            const duration = 2000; // ms
+            const frameRate = 30; // frames per sec
+            const totalFrames = Math.round((duration / 1000) * frameRate);
+            const increment = target / totalFrames;
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                
+                if(isDecimal) {
+                    el.textContent = current.toFixed(1) + suffix;
+                } else {
+                    el.textContent = Math.floor(current).toLocaleString('en-US') + suffix;
+                }
+            }, 1000 / frameRate);
+            
+            observer.unobserve(el); // Animate only once
+        }
+    });
+}, observerOptions);
+
+counters.forEach(counter => observer.observe(counter));
+</script>
 
 </body>
 </html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio | Libros Online</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        :root{
+            --bg:#08111f;
+            --panel:#0f172a;
+            --panel-soft:#111827;
+            --border:rgba(255,255,255,.06);
+            --text:#f8fafc;
+            --muted:#94a3b8;
+            --accent:#22c55e;
+            --accent-dark:#16a34a;
+            --chip:#162033;
+            --shadow:0 12px 30px rgba(0,0,0,.28);
+        }
+
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            font-family:Arial, Helvetica, sans-serif;
+            background:linear-gradient(180deg,#07101d 0%, #0b1120 100%);
+            color:var(--text);
+        }
+
+        a{
+            text-decoration:none;
+            color:inherit;
+        }
+
+        .topbar{
+            position:sticky;
+            top:0;
+            z-index:100;
+            background:rgba(8,17,31,.92);
+            backdrop-filter:blur(10px);
+            border-bottom:1px solid var(--border);
+        }
+
+        .topbar-inner{
+            max-width:1280px;
+            margin:0 auto;
+            padding:16px 20px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            flex-wrap:wrap;
+        }
+
+        .brand{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-size:1.25rem;
+            font-weight:700;
+        }
+
+        .nav-links,
+        .nav-actions{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            flex-wrap:wrap;
+        }
+
+        .nav-link{
+            color:#e5e7eb;
+            padding:8px 12px;
+            border-radius:10px;
+            transition:.2s ease;
+        }
+
+        .nav-link:hover{
+            background:rgba(255,255,255,.06);
+        }
+
+        .btn{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            padding:10px 14px;
+            border:none;
+            border-radius:12px;
+            cursor:pointer;
+            font-weight:700;
+            transition:.2s ease;
+        }
+
+        .btn-primary{
+            background:var(--accent);
+            color:#052e16;
+        }
+
+        .btn-primary:hover{
+            background:var(--accent-dark);
+            color:#fff;
+        }
+
+        .btn-secondary{
+            background:rgba(255,255,255,.04);
+            color:#fff;
+            border:1px solid var(--border);
+        }
+
+        .btn-secondary:hover{
+            background:rgba(255,255,255,.08);
+        }
+
+        .user-badge{
+            padding:8px 12px;
+            border-radius:999px;
+            background:rgba(255,255,255,.05);
+            border:1px solid var(--border);
+            color:#e5e7eb;
+        }
+
+        .page{
+            max-width:1280px;
+            margin:0 auto;
+            padding:24px 20px 48px;
+        }
+
+        .toolbar{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            flex-wrap:wrap;
+            margin-bottom:22px;
+        }
+
+        .toolbar-left{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .toolbar-label{
+            color:var(--muted);
+            font-size:.95rem;
+            margin-right:4px;
+        }
+
+        .chip{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            padding:10px 14px;
+            border-radius:999px;
+            background:var(--chip);
+            border:1px solid var(--border);
+            color:#e5e7eb;
+            font-size:.94rem;
+            transition:.2s ease;
+        }
+
+        .chip:hover{
+            background:#1d2940;
+        }
+
+        .chip.active{
+            background:var(--accent);
+            color:#052e16;
+            border-color:transparent;
+            font-weight:700;
+        }
+
+        .toolbar-right{
+            color:var(--muted);
+            font-size:.95rem;
+        }
+
+        .books-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+            gap:22px;
+        }
+
+        .book-card{
+            background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+            border:1px solid var(--border);
+            border-radius:22px;
+            overflow:hidden;
+            box-shadow:var(--shadow);
+            transition:transform .18s ease, border-color .18s ease;
+        }
+
+        .book-card:hover{
+            transform:translateY(-4px);
+            border-color:rgba(34,197,94,.45);
+        }
+
+        .book-image{
+            width:100%;
+            height:310px;
+            object-fit:cover;
+            display:block;
+            background:#0f172a;
+        }
+
+        .book-body{
+            padding:16px;
+        }
+
+        .book-category{
+            display:inline-block;
+            margin-bottom:10px;
+            padding:6px 10px;
+            border-radius:999px;
+            background:rgba(34,197,94,.12);
+            color:#86efac;
+            font-size:.8rem;
+            font-weight:700;
+        }
+
+        .book-title{
+            margin:0 0 8px;
+            font-size:1.02rem;
+            line-height:1.35;
+            min-height:46px;
+        }
+
+        .book-author{
+            margin:0 0 12px;
+            color:var(--muted);
+            font-size:.93rem;
+            min-height:20px;
+        }
+
+        .book-price{
+            margin:0 0 14px;
+            font-size:1.12rem;
+            font-weight:800;
+            color:#f8fafc;
+        }
+
+        .book-actions{
+            display:flex;
+            gap:10px;
+        }
+
+        .book-actions form{
+            flex:1;
+            margin:0;
+        }
+
+        .book-actions button,
+        .book-actions a{
+            width:100%;
+        }
+
+        .empty-state{
+            padding:30px;
+            border-radius:22px;
+            background:rgba(255,255,255,.03);
+            border:1px solid var(--border);
+            text-align:center;
+            color:var(--muted);
+        }
+
+        .search-bar {
+            display:flex;
+            align-items:center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 4px 12px;
+            gap: 8px;
+        }
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            outline: none;
+            padding: 6px;
+            width: 200px;
+        }
+        .search-bar button {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-top: 40px;
+        }
+        .pagination a {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            transition: 0.2s;
+        }
+        .pagination a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .pagination span {
+            color: var(--muted);
+        }
+
+        @media (max-width: 768px){
+            .page{
+                padding-top:18px;
+            }
+
+            .book-image{
+                height:270px;
+            }
+
+            .toolbar{
+                align-items:flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a class="brand" th:href="@{/}">
+            <span>📚</span>
+            <span>Libros Online</span>
+        </a>
+
+        <nav class="nav-links">
+            <a class="nav-link" th:href="@{/}">Inicio</a>
+            <a class="nav-link" th:href="@{/catalogo}">Catálogo</a>
+            <a class="nav-link" th:href="@{/carrito}">Carrito (<span id="cart-counter" th:text="${cartCount}">0</span>)</a>
+            <a class="nav-link" th:if="${usuarioSesion != null}" th:href="@{/pedidos}">Pedidos</a>
+            <a class="nav-link" th:if="${esAdmin}" th:href="@{/admin}">Admin</a>
+        </nav>
+
+        <div class="nav-actions">
+            <span class="user-badge" th:if="${usuarioSesion != null}">
+                Hola, <strong th:text="${usuarioSesion.nombre}">Usuario</strong>
+            </span>
+            <a class="btn btn-secondary" th:if="${usuarioSesion == null}" th:href="@{/login}">Iniciar sesión</a>
+            <a class="btn btn-secondary" th:if="${usuarioSesion == null}" th:href="@{/registro}">Registro</a>
+            <form th:action="@{/logout}" method="post" th:if="${usuarioSesion != null}" style="display:inline; margin:0;">
+                <button type="submit" class="btn btn-primary">Salir</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+
+    <section class="toolbar">
+        <div class="toolbar-left">
+            <span class="toolbar-label">Categorías:</span>
+
+            <a class="chip"
+               th:href="@{/catalogo}"
+               th:classappend="${#strings.isEmpty(categoriaSeleccionada)} ? ' active' : ''">
+                Todas
+            </a>
+
+            <a class="chip"
+               th:each="cat : ${categorias}"
+               th:text="${cat}"
+               th:href="@{/catalogo(categoria=${cat})}"
+               th:classappend="${#strings.equals(cat, categoriaSeleccionada)} ? ' active' : ''">
+                Categoría
+            </a>
+        </div>
+
+        <div class="toolbar-right" style="display:flex; align-items:center; gap:16px;">
+            <span th:text="${librosPage.totalElements} + ' libros disponibles'">0 libros disponibles</span>
+            <form class="search-bar" th:action="@{/catalogo}" method="get">
+                <input type="text" name="q" th:value="${q}" placeholder="Buscar por título o autor..." />
+                <input type="hidden" name="categoria" th:value="${categoriaSeleccionada}" th:if="${!#strings.isEmpty(categoriaSeleccionada)}" />
+                <button type="submit">Buscar</button>
+            </form>
+        </div>
+    </section>
+
+    <div th:if="${#lists.isEmpty(libros)}" class="empty-state">
+        No hay libros disponibles para la categoría seleccionada.
+    </div>
+
+    <section class="books-grid" th:unless="${#lists.isEmpty(libros)}">
+        <article class="book-card" th:each="libro : ${libros}">
+            <a th:href="@{/catalogo/{id}(id=${libro.id})}">
+                <img class="book-image" th:src="${libro.imagenPortada}" th:alt="${libro.titulo}">
+            </a>
+
+            <div class="book-body">
+                <span class="book-category" th:text="${libro.categoria} ?: 'General'">Categoría</span>
+
+                <h3 class="book-title" th:text="${libro.titulo}">Título del libro</h3>
+                <p class="book-author" th:text="${libro.autor}">Autor</p>
+                <p class="book-price" th:text="'$ ' + ${libro.precio}">$ 0</p>
+
+                <div class="book-actions">
+                    <form class="add-to-cart-form" th:action="@{/carrito/api/agregar/{id}(id=${libro.id})}" method="post">
+                        <button class="btn btn-primary" type="submit">Agregar al carrito</button>
+                    </form>
+                    <a class="btn btn-secondary" th:href="@{/catalogo/{id}(id=${libro.id})}">Detalles</a>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <!-- Paginación -->
+    <div class="pagination" th:if="${librosPage.totalPages > 1}">
+        <a th:if="${librosPage.hasPrevious()}"
+           th:href="@{/catalogo(page=${librosPage.number - 1}, categoria=${categoriaSeleccionada}, q=${q})}">
+            &laquo; Anterior
+        </a>
+        <span>Página <span th:text="${librosPage.number + 1}">1</span> de <span th:text="${librosPage.totalPages}">1</span></span>
+        <a th:if="${librosPage.hasNext()}"
+           th:href="@{/catalogo(page=${librosPage.number + 1}, categoria=${categoriaSeleccionada}, q=${q})}">
+            Siguiente &raquo;
+        </a>
+    </div>
+
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.add-to-cart-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = 'Agregando...';
+            btn.disabled = true;
+
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if(data.success) {
+                    const counter = document.getElementById('cart-counter');
+                    if(counter) {
+                        counter.textContent = data.cartCount;
+                        // Pequeña animación de rebote (opcional)
+                        counter.style.transform = 'scale(1.3)';
+                        counter.style.display = 'inline-block';
+                        counter.style.transition = 'transform 0.2s';
+                        setTimeout(() => counter.style.transform = 'scale(1)', 200);
+                    }
+                    
+                    btn.textContent = '¡Agregado!';
+                    btn.style.background = '#16a34a';
+                    btn.style.color = '#fff';
+                    
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                        btn.style.color = '';
+                        btn.disabled = false;
+                    }, 1500);
+                } else {
+                    alert(data.mensaje);
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            } catch(error) {
+                console.error('Error al agregar:', error);
+                alert('Ocurrió un error al agregar el libro.');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>

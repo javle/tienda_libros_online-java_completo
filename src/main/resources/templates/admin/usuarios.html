@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios Registrados | Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <div class="nav-wrap">
+        <strong>Administrador</strong>
+        <nav>
+            <a th:href="@{/}">Inicio</a>
+            <a th:href="@{/admin}">Volver al panel</a>
+        </nav>
+    </div>
+</header>
+<div class="container">
+    <div class="card">
+        <h2>Usuarios Registrados</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>Rol</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${usuarios}">
+                <td th:text="${u.id}"></td>
+                <td th:text="${u.nombre}"></td>
+                <td th:text="${u.usuario}"></td>
+                <td th:text="${u.correo}"></td>
+                <td th:text="${u.rol}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(usuarios)}">
+                <td colspan="5">No hay usuarios registrados.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

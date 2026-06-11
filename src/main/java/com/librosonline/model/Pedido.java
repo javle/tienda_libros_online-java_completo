@@ -7,8 +7,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 @Entity
 @Table(name = "pedidos")
+@EntityListeners(AuditingEntityListener.class)
 public class Pedido {
 
     @Id
@@ -19,12 +23,16 @@ public class Pedido {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @Column(nullable = false)
-    private LocalDateTime fecha = LocalDateTime.now();
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime fecha;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private PedidoEstado estado = PedidoEstado.CREADO;
+    private PedidoEstado estado = PedidoEstado.PENDIENTE;
+
+    @Embedded
+    private DireccionEnvio direccionEnvio;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal total = BigDecimal.ZERO;
@@ -83,5 +91,13 @@ public class Pedido {
 
     public void setDetalles(List<PedidoDetalle> detalles) {
         this.detalles = detalles;
+    }
+
+    public DireccionEnvio getDireccionEnvio() {
+        return direccionEnvio;
+    }
+
+    public void setDireccionEnvio(DireccionEnvio direccionEnvio) {
+        this.direccionEnvio = direccionEnvio;
     }
 }

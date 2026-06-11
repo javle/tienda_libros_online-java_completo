@@ -2,8 +2,14 @@ package com.librosonline.model;
 
 import jakarta.persistence.*;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "usuarios")
+@EntityListeners(AuditingEntityListener.class)
 public class Usuario {
 
     @Id
@@ -25,6 +31,19 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Rol rol = Rol.CLIENTE;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime fechaCreacion;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime fechaActualizacion;
+
+    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    public LocalDateTime getFechaActualizacion() { return fechaActualizacion; }
+    public void setFechaActualizacion(LocalDateTime fechaActualizacion) { this.fechaActualizacion = fechaActualizacion; }
 
     public Long getId() {
         return id;

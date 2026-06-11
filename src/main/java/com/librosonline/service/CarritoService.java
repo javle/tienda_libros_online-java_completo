@@ -33,7 +33,7 @@ public class CarritoService {
                 return;
             }
         }
-        carrito.add(new CarritoItem(libro.getId(), libro.getTitulo(), libro.getPrecio(), cantidad));
+        carrito.add(new CarritoItem(libro.getId(), libro.getTitulo(), libro.getPrecio(), cantidad, libro.getImagenPortada()));
         session.setAttribute(CARRITO_KEY, carrito);
     }
 

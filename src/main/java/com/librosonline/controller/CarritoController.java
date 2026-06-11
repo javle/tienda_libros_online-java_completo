@@ -1,10 +1,7 @@
 package com.librosonline.controller;
 
-import com.librosonline.config.SessionHelper;
-import com.librosonline.model.Usuario;
 import com.librosonline.service.CarritoService;
 import com.librosonline.service.LibroService;
-import com.librosonline.service.PedidoService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,12 +14,10 @@ public class CarritoController {
 
     private final LibroService libroService;
     private final CarritoService carritoService;
-    private final PedidoService pedidoService;
 
-    public CarritoController(LibroService libroService, CarritoService carritoService, PedidoService pedidoService) {
+    public CarritoController(LibroService libroService, CarritoService carritoService) {
         this.libroService = libroService;
         this.carritoService = carritoService;
-        this.pedidoService = pedidoService;
     }
 
     @GetMapping
@@ -30,6 +25,39 @@ public class CarritoController {
         model.addAttribute("items", carritoService.obtenerCarrito(session));
         model.addAttribute("total", carritoService.calcularTotal(session));
         return "carrito/index";
+    }
+
+    @PostMapping("/api/agregar/{id}")
+    @ResponseBody
+    public java.util.Map<String, Object> agregarApi(@PathVariable Long id,
+                          @RequestParam(defaultValue = "1") int cantidad,
+                          HttpSession session) {
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        return libroService.buscarPorId(id)
+                .map(libro -> {
+                    int qtyInCart = carritoService.obtenerCarrito(session).stream()
+                            .filter(i -> i.getLibroId().equals(libro.getId()))
+                            .mapToInt(com.librosonline.dto.CarritoItem::getCantidad)
+                            .sum();
+                            
+                    int limite = Math.min(libro.getStock(), 10);
+                    if (qtyInCart + cantidad > limite) {
+                        response.put("success", false);
+                        response.put("mensaje", "Límite alcanzado (" + limite + " unidades max).");
+                        return response;
+                    }
+
+                    carritoService.agregarLibro(session, libro, Math.max(cantidad, 1));
+                    response.put("success", true);
+                    response.put("cartCount", carritoService.cantidadItems(session));
+                    response.put("mensaje", "¡Libro agregado!");
+                    return response;
+                })
+                .orElseGet(() -> {
+                    response.put("success", false);
+                    response.put("mensaje", "Libro no encontrado.");
+                    return response;
+                });
     }
 
     @PostMapping("/agregar/{id}")
@@ -50,8 +78,22 @@ public class CarritoController {
     }
 
     @PostMapping("/actualizar/{id}")
-    public String actualizar(@PathVariable Long id, @RequestParam int cantidad, HttpSession session) {
-        carritoService.actualizarCantidad(session, id, cantidad);
+    public String actualizar(@PathVariable Long id, @RequestParam int cantidad, HttpSession session, RedirectAttributes redirectAttributes) {
+        if (cantidad < 1) {
+            redirectAttributes.addFlashAttribute("mensajeError", "La cantidad no puede ser menor a 1.");
+            return "redirect:/carrito";
+        }
+        
+        libroService.buscarPorId(id).ifPresentOrElse(libro -> {
+            int limite = Math.min(libro.getStock(), 10);
+            if (cantidad > limite) {
+                redirectAttributes.addFlashAttribute("mensajeError", "Solo puedes comprar hasta " + limite + " unidades de '" + libro.getTitulo() + "'.");
+                carritoService.actualizarCantidad(session, id, limite);
+            } else {
+                carritoService.actualizarCantidad(session, id, cantidad);
+            }
+        }, () -> redirectAttributes.addFlashAttribute("mensajeError", "Libro no encontrado."));
+
         return "redirect:/carrito";
     }
 
@@ -61,20 +103,4 @@ public class CarritoController {
         return "redirect:/carrito";
     }
 
-    @PostMapping("/checkout")
-    public String checkout(HttpSession session, RedirectAttributes redirectAttributes) {
-        Usuario usuario = SessionHelper.getUsuario(session);
-        if (usuario == null) {
-            redirectAttributes.addFlashAttribute("mensajeError", "Debes iniciar sesión para finalizar tu compra.");
-            return "redirect:/login";
-        }
-        try {
-            var pedido = pedidoService.crearPedidoDesdeCarrito(usuario, session);
-            redirectAttributes.addFlashAttribute("mensajeExito", "Pedido #" + pedido.getId() + " generado correctamente.");
-            return "redirect:/pedidos";
-        } catch (IllegalStateException e) {
-            redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
-            return "redirect:/carrito";
-        }
-    }
 }

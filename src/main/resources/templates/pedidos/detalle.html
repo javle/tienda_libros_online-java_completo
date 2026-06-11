@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Pedido | Libros Online</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        :root {
+            --bg: #08111f;
+            --panel: #0f172a;
+            --border: rgba(255,255,255,.06);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --shadow: 0 12px 30px rgba(0,0,0,.28);
+        }
+        body {
+            margin: 0; font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(180deg,#07101d 0%, #0b1120 100%);
+            color: var(--text);
+        }
+        .page { max-width: 960px; margin: 40px auto; padding: 0 20px; }
+        .card {
+            background: var(--panel); border: 1px solid var(--border);
+            border-radius: 16px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 24px;
+        }
+        .header-detalle { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; }
+        .header-detalle h1 { margin: 0; font-size: 1.8rem; }
+        .status-badge {
+            display: inline-block; padding: 6px 16px; border-radius: 999px; font-weight: bold; font-size: 0.9rem;
+        }
+        .status-badge.creado { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+        .status-badge.pendiente { background: rgba(245, 158, 11, 0.15); color: #fcd34d; }
+        .status-badge.pagado { background: rgba(34, 197, 94, 0.15); color: #86efac; }
+        .status-badge.enviado { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+        .status-badge.cancelado { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .info-block h3 { margin-top: 0; color: var(--muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+        .info-block p { margin: 0 0 8px 0; line-height: 1.5; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 14px; border-bottom: 1px solid var(--border); }
+        th { color: var(--muted); font-size: 0.9rem; text-transform: uppercase; }
+        .book-cell { display: flex; align-items: center; gap: 16px; }
+        .book-cover { width: 48px; height: 72px; border-radius: 6px; object-fit: cover; background: #1e293b; }
+        .total-row { font-size: 1.4rem; font-weight: bold; text-align: right; margin-top: 24px; }
+        
+        .btn-back { display: inline-flex; align-items: center; padding: 10px 16px; background: rgba(255,255,255,0.05); color: #fff; border-radius: 8px; text-decoration: none; border: 1px solid var(--border); transition: 0.2s; margin-bottom: 20px;}
+        .btn-back:hover { background: rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
+
+<main class="page">
+    <a href="javascript:history.back()" class="btn-back">← Volver</a>
+
+    <div class="card">
+        <div class="header-detalle">
+            <div>
+                <h1>Pedido #<span th:text="${pedido.id}"></span></h1>
+                <p style="color: var(--muted); margin: 8px 0 0 0;">Realizado el: <span th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}"></span></p>
+            </div>
+            <div class="status-badge" th:classappend="${#strings.toLowerCase(pedido.estado)}" th:text="${pedido.estado}">ESTADO</div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-block">
+                <h3>Información del Cliente</h3>
+                <p><strong th:text="${pedido.usuario.nombre}"></strong></p>
+                <p th:text="${pedido.usuario.correo}"></p>
+            </div>
+            
+            <div class="info-block" th:if="${pedido.direccionEnvio != null}">
+                <h3>Dirección de Envío</h3>
+                <p><strong th:text="${pedido.direccionEnvio.direccion}"></strong></p>
+                <p th:text="${pedido.direccionEnvio.ciudad} + ', C.P. ' + ${pedido.direccionEnvio.codigoPostal}"></p>
+                <p>Tel: <span th:text="${pedido.direccionEnvio.telefono}"></span></p>
+            </div>
+            <div class="info-block" th:unless="${pedido.direccionEnvio != null}">
+                <h3>Dirección de Envío</h3>
+                <p style="color: var(--muted);"><em>No proporcionada</em></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 16px;">Artículos Comprados</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio Unitario</th>
+                    <th>Cantidad</th>
+                    <th style="text-align: right;">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="detalle : ${pedido.detalles}">
+                    <td>
+                        <div class="book-cell">
+                            <img th:if="${detalle.libro.imagenUrl != null}" th:src="${detalle.libro.imagenUrl}" class="book-cover">
+                            <div th:unless="${detalle.libro.imagenUrl != null}" class="book-cover" style="display:flex;align-items:center;justify-content:center;font-size:24px;color:#334155;">📖</div>
+                            <strong th:text="${detalle.libro.titulo}">Título del Libro</strong>
+                        </div>
+                    </td>
+                    <td th:text="'$ ' + ${#numbers.formatDecimal(detalle.precioUnitario, 0, 'COMMA', 0, 'POINT')}"></td>
+                    <td th:text="${detalle.cantidad}"></td>
+                    <td style="text-align: right; font-weight: bold;" th:text="'$ ' + ${#numbers.formatDecimal(detalle.subtotal, 0, 'COMMA', 0, 'POINT')}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total-row">
+            Total: <span th:text="'$ ' + ${#numbers.formatDecimal(pedido.total, 0, 'COMMA', 0, 'POINT')}"></span>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

@@ -7,15 +7,17 @@ public class CarritoItem {
     private String titulo;
     private BigDecimal precio;
     private int cantidad;
+    private String imagenUrl;
 
     public CarritoItem() {
     }
 
-    public CarritoItem(Long libroId, String titulo, BigDecimal precio, int cantidad) {
+    public CarritoItem(Long libroId, String titulo, BigDecimal precio, int cantidad, String imagenUrl) {
         this.libroId = libroId;
         this.titulo = titulo;
         this.precio = precio;
         this.cantidad = cantidad;
+        this.imagenUrl = imagenUrl;
     }
 
     public Long getLibroId() {
@@ -48,6 +50,14 @@ public class CarritoItem {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
     }
 
     public BigDecimal getSubtotal() {

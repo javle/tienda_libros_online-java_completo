@@ -2,7 +2,10 @@ package com.librosonline.config;
 
 import com.librosonline.model.Rol;
 import com.librosonline.model.Usuario;
+import com.librosonline.security.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public final class SessionHelper {
 
@@ -12,8 +15,11 @@ public final class SessionHelper {
     }
 
     public static Usuario getUsuario(HttpSession session) {
-        Object obj = session.getAttribute(USUARIO_SESSION_KEY);
-        return obj instanceof Usuario ? (Usuario) obj : null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof CustomUserDetails) {
+            return ((CustomUserDetails) auth.getPrincipal()).getUsuario();
+        }
+        return null;
     }
 
     public static boolean isAdmin(HttpSession session) {

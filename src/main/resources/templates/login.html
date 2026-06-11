@@ -3,32 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Libros Online</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Iniciar sesión | Libros Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #07101d;
+            --panel: #0f172a;
+            --border: rgba(255,255,255,.07);
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --accent: #22c55e;
+            --accent-dark: #16a34a;
+            --error-bg: rgba(239,68,68,.12);
+            --error-border: rgba(239,68,68,.4);
+            --success-bg: rgba(34,197,94,.12);
+            --success-border: rgba(34,197,94,.4);
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: radial-gradient(ellipse at 50% 0%, #0d1f35 0%, var(--bg) 65%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text);
+        }
+
+        /* ── TOP BAR ── */
+        .topbar {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            background: rgba(7,16,29,.8);
+            backdrop-filter: blur(10px);
+        }
+        .brand { font-size: 1.2rem; font-weight: 800; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .topbar-link { color: var(--muted); text-decoration: none; font-size: .9rem; transition: color .2s; }
+        .topbar-link:hover { color: var(--text); }
+
+        /* ── CARD ── */
+        .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+        .card {
+            width: 100%;
+            max-width: 440px;
+            background: linear-gradient(145deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px 36px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.4);
+            backdrop-filter: blur(6px);
+        }
+
+        .card-icon { font-size: 2.4rem; margin-bottom: 16px; display: block; text-align: center; }
+        .card-title { font-size: 1.7rem; font-weight: 800; text-align: center; margin-bottom: 6px; }
+        .card-sub { text-align: center; color: var(--muted); font-size: .9rem; margin-bottom: 28px; }
+
+        /* ── ALERTS ── */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: .875rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-error { background: var(--error-bg); border: 1px solid var(--error-border); color: #fca5a5; }
+        .alert-success { background: var(--success-bg); border: 1px solid var(--success-border); color: #86efac; }
+
+        /* ── FORM ── */
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: .85rem; font-weight: 600; color: var(--muted); margin-bottom: 7px; letter-spacing: .03em; text-transform: uppercase; }
+        input[type="text"], input[type="password"], input[type="email"] {
+            width: 100%;
+            padding: 13px 16px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color .2s, background .2s;
+            outline: none;
+        }
+        input:focus { border-color: var(--accent); background: rgba(34,197,94,.05); }
+        input::placeholder { color: #475569; }
+
+        /* ── BUTTON ── */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: #052e16;
+            font-weight: 800;
+            font-size: 1rem;
+            font-family: inherit;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background .2s, transform .1s;
+            margin-top: 6px;
+        }
+        .btn-submit:hover { background: var(--accent-dark); color: #fff; }
+        .btn-submit:active { transform: scale(.98); }
+
+        /* ── FOOTER LINKS ── */
+        .card-footer { text-align: center; margin-top: 22px; color: var(--muted); font-size: .875rem; }
+        .card-footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+        .card-footer a:hover { text-decoration: underline; }
+
+        .hint-box {
+            margin-top: 20px;
+            padding: 12px 16px;
+            background: rgba(34,197,94,.06);
+            border: 1px solid rgba(34,197,94,.15);
+            border-radius: 12px;
+            font-size: .8rem;
+            color: var(--muted);
+            text-align: center;
+        }
+        .hint-box strong { color: #86efac; }
+    </style>
 </head>
 <body>
-<header>
-    <div class="nav-wrap"><strong>Libros Online</strong><nav><a th:href="@{/}">Inicio</a></nav></div>
+
+<header class="topbar">
+    <a class="brand" th:href="@{/}">📚 Libros Online</a>
+    <a class="topbar-link" th:href="@{/}">← Volver al inicio</a>
 </header>
-<div class="container">
-    <div class="card" style="max-width:520px;margin:0 auto;">
-        <h1>Iniciar sesión</h1>
-        <div th:if="${mensajeExito}" class="alert-ok" th:text="${mensajeExito}"></div>
-        <div th:if="${mensajeError}" class="alert-error" th:text="${mensajeError}"></div>
 
-        <form th:action="@{/login}" th:object="${loginForm}" method="post">
-            <label>Usuario</label>
-            <input type="text" th:field="*{usuario}" required>
+<main class="page">
+    <div class="card">
+        <span class="card-icon">🔐</span>
+        <h1 class="card-title">Bienvenido de vuelta</h1>
+        <p class="card-sub">Ingresa tus credenciales para continuar</p>
 
-            <label>Clave</label>
-            <input type="password" th:field="*{clave}" required>
+        <!-- Error de Spring Security (param.error) -->
+        <div class="alert alert-error" th:if="${param.error}">
+            ⚠️ Usuario o contraseña incorrectos. Inténtalo de nuevo.
+        </div>
 
-            <button type="submit">Ingresar</button>
+        <!-- Logout exitoso -->
+        <div class="alert alert-success" th:if="${param.logout}">
+            ✅ Has cerrado sesión correctamente.
+        </div>
+
+        <!-- Flash messages del AuthController -->
+        <div class="alert alert-error" th:if="${mensajeError}" th:text="${mensajeError}"></div>
+        <div class="alert alert-success" th:if="${mensajeExito}" th:text="${mensajeExito}"></div>
+
+        <!--
+            CRÍTICO: Spring Security exige name="username" y name="password".
+            action DEBE ser /login (loginProcessingUrl definido en SecurityConfig).
+            Thymeleaf añade el token CSRF automáticamente.
+        -->
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" placeholder="Ej: admin" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
+            </div>
+            <button class="btn-submit" type="submit">Iniciar sesión</button>
         </form>
 
-        <p class="small">Administrador inicial: <strong>admin</strong> / <strong>admin123</strong></p>
-        <p>¿No tienes cuenta? <a th:href="@{/registro}">Regístrate</a></p>
+        <div class="hint-box">
+            Admin por defecto: <strong>admin</strong> / <strong>admin123</strong>
+        </div>
+
+        <p class="card-footer">
+            ¿No tienes cuenta? <a th:href="@{/registro}">Regístrate gratis</a>
+        </p>
     </div>
-</div>
+</main>
+
 </body>
 </html>

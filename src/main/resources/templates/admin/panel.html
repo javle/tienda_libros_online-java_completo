@@ -3,89 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Libros Online</title>
+    <title>Admin Dashboard | Libros Online</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg: #030712;
+            --panel: #0f172a;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --accent: #22c55e;
+            --accent-glow: rgba(34, 197, 94, 0.4);
+            --danger: #ef4444;
+            --primary: #3b82f6;
+        }
+
+        body{ margin:0; font-family:'Inter', sans-serif; background:var(--bg); color:var(--text); }
+        a{ text-decoration:none; color:inherit; }
+
+        /* Topbar */
+        .topbar{ position:sticky; top:0; z-index:100; background:rgba(3, 7, 18, 0.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+        .topbar-inner{ max-width:1400px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; }
+        .brand{ font-size:1.25rem; font-weight:800; display:flex; align-items:center; gap:8px;}
+        .nav-links{ display:flex; gap:16px; align-items: center; }
+        .nav-link{ padding:8px 12px; border-radius:8px; font-weight:500; transition:0.2s; color:var(--muted);}
+        .nav-link:hover, .nav-link.active{ color:#fff; background:rgba(255,255,255,0.05); }
+
+        .container { max-width: 1400px; margin: 40px auto; padding: 0 24px; }
+        
+        .alert { padding: 16px; border-radius: 12px; margin-bottom: 24px; font-weight: 500; border:1px solid; }
+        .alert-ok { background: rgba(34,197,94,0.1); color: #4ade80; border-color: rgba(34,197,94,0.2); }
+        .alert-error { background: rgba(239,68,68,0.1); color: #f87171; border-color: rgba(239,68,68,0.2); }
+
+        /* Stats Grid (Glassmorphism) */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .stat-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+        .stat-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+        .stat-info h3 { margin: 0 0 8px; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+        .stat-info p { margin: 0; font-size: 2.5rem; font-weight: 800; }
+        .stat-icon { font-size: 2.5rem; opacity: 0.2; }
+
+        /* Modern Tables */
+        .table-card { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .table-header h2 { margin: 0; font-size: 1.5rem; }
+        
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th { text-align: left; padding: 16px; color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); }
+        td { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; vertical-align: middle; }
+        tbody tr { transition: 0.2s ease; }
+        tbody tr:hover { background: rgba(255,255,255,0.02); }
+        tbody tr:hover td { border-bottom-color: rgba(255,255,255,0.06); }
+
+        .book-thumbnail { width: 40px; height: 55px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
+
+        /* SaaS Buttons */
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; border: none; text-decoration:none; }
+        .btn-primary { background: var(--accent); color: #052e16; }
+        .btn-primary:hover { background: #16a34a; box-shadow: 0 0 15px var(--accent-glow); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: var(--muted); }
+        .btn-danger { background: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+        .btn-danger:hover { background: rgba(239,68,68,0.2); }
+        .btn-blue { background: rgba(59,130,246,0.1); color: #93c5fd; border: 1px solid rgba(59,130,246,0.2); }
+        .btn-blue:hover { background: rgba(59,130,246,0.2); }
+
+        /* Badges */
+        .status-badge { display: inline-block; padding: 6px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; }
+        
+        .status-badge.creado { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .status-badge.pendiente { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-badge.pagado { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-badge.enviado { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .status-badge.cancelado { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        .status-badge.activo { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+        .status-badge.inactivo { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
+
+        .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
+        .pagination a { padding: 8px 16px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); transition: 0.2s; font-size: 0.9rem; font-weight: 500;}
+        .pagination a:hover { background: rgba(255,255,255,0.08); color: #fff;}
+        .pagination span { color: var(--muted); font-size: 0.9rem; }
+
+        /* Activity Feed */
+        .feed-list { display: flex; flex-direction: column; gap: 16px; }
+        .feed-card { 
+            display: flex; align-items: center; justify-content: space-between; 
+            background: rgba(255,255,255,0.015); 
+            border: 1px solid var(--border); 
+            border-radius: 16px; 
+            padding: 16px 24px; 
+            transition: 0.2s ease; 
+        }
+        .feed-card:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .feed-main { display: flex; align-items: center; gap: 24px; flex: 1; }
+        .feed-id { font-family: monospace; color: var(--muted); font-size: 1rem; font-weight: 600; width: 60px; }
+        .feed-customer { font-weight: 600; display: flex; align-items: center; gap: 8px; width: 220px; }
+        .feed-customer .icon { font-size: 1.2rem; opacity: 0.8; }
+        .feed-date { color: var(--muted); font-size: 0.9rem; width: 160px; display: flex; align-items: center; gap: 6px; }
+        .feed-status { width: 120px; }
+        .feed-total { font-weight: 800; font-size: 1.2rem; width: 120px; text-align: right; }
+        .feed-actions { display: flex; gap: 8px; justify-content: flex-end; margin-left: auto; }
+
+        @media (max-width: 1024px) {
+            .feed-card { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .feed-main { flex-direction: column; align-items: flex-start; gap: 12px; width: 100%; }
+            .feed-id, .feed-customer, .feed-date, .feed-status, .feed-total { width: auto; }
+            .feed-actions { width: 100%; justify-content: flex-start; }
+            .feed-total { text-align: left; }
+        }
+
+        /* Modal Logistica */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px);}
+        .modal-content { background-color: var(--panel); margin: 10% auto; padding: 32px; border: 1px solid var(--border); width: 400px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position:relative;}
+        .close { color: var(--muted); position: absolute; right: 24px; top: 24px; font-size: 24px; cursor: pointer; transition: 0.2s;}
+        .close:hover { color: #fff; }
+        .modal-content h2 { margin: 0 0 24px; font-size: 1.5rem; }
+        .modal-content p { margin: 0 0 16px; display: flex; flex-direction: column; gap: 4px; }
+        .modal-content p strong { color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;}
+        .modal-content p span { font-size: 1.1rem; }
+    </style>
 </head>
 <body>
-<header>
-    <div class="nav-wrap">
-        <strong>Panel administrador</strong>
-        <nav>
-            <a th:href="@{/}">Inicio</a>
-            <a th:href="@{/libros}">Libros</a>
-            <a th:href="@{/pedidos}">Pedidos</a>
-            <a th:href="@{/logout}">Salir</a>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <div class="brand">
+            <span>⚙️</span>
+            <span>Admin Dashboard</span>
+        </div>
+        <nav class="nav-links">
+            <a class="nav-link" th:href="@{/}">↗ Ver Tienda</a>
+            <a class="nav-link active" th:href="@{/admin}">Panel General</a>
+            <a class="nav-link" th:href="@{/admin/usuarios}">Usuarios</a>
+            <form th:action="@{/logout}" method="post" style="display:inline; margin-left: 16px;">
+                <button type="submit" class="btn btn-outline" style="padding: 6px 12px;">Cerrar sesión</button>
+            </form>
         </nav>
     </div>
 </header>
-<div class="container">
-    <div th:if="${mensajeExito}" class="alert-ok" th:text="${mensajeExito}"></div>
-    <div th:if="${mensajeError}" class="alert-error" th:text="${mensajeError}"></div>
 
-    <div class="grid grid-3">
-        <div class="card"><h2>Total libros</h2><p class="price" th:text="${totalLibros}"></p></div>
-        <div class="card"><h2>Total usuarios</h2><p class="price" th:text="${totalUsuarios}"></p></div>
-        <div class="card"><h2>Total pedidos</h2><p class="price" th:text="${totalPedidos}"></p></div>
+<main class="container">
+    <div th:if="${mensajeExito}" class="alert alert-ok" th:text="${mensajeExito}"></div>
+    <div th:if="${mensajeError}" class="alert alert-error" th:text="${mensajeError}"></div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-info">
+                <h3>Total Libros</h3>
+                <p th:text="${totalLibros}">0</p>
+            </div>
+            <div class="stat-icon">📚</div>
+        </div>
+        <div class="stat-card" style="--accent: #3b82f6;">
+            <div class="stat-info">
+                <h3>Usuarios Registrados</h3>
+                <p th:text="${totalUsuarios}">0</p>
+            </div>
+            <div class="stat-icon">👥</div>
+        </div>
+        <div class="stat-card" style="--accent: #f59e0b;">
+            <div class="stat-info">
+                <h3>Pedidos Históricos</h3>
+                <p th:text="${totalPedidos}">0</p>
+            </div>
+            <div class="stat-icon">📦</div>
+        </div>
     </div>
 
-    <div class="card">
-        <h2>Gestión de libros</h2>
-        <a class="btn" th:href="@{/admin/libros/nuevo}">Nuevo libro</a>
+    <!-- Gestión de Libros -->
+    <div class="table-card">
+        <div class="table-header">
+            <h2>Gestión de Catálogo</h2>
+            <a class="btn btn-primary" th:href="@{/admin/libros/nuevo}">+ Añadir Libro</a>
+        </div>
         <table>
             <thead>
-            <tr>
-                <th>ID</th>
-                <th>Título</th>
-                <th>Autor</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Activo</th>
-                <th>Acciones</th>
-            </tr>
+                <tr>
+                    <th style="width:50px;"></th>
+                    <th>ID</th>
+                    <th>Título & Autor</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Estado</th>
+                    <th style="text-align:right;">Acciones</th>
+                </tr>
             </thead>
             <tbody>
-            <tr th:each="libro : ${libros}">
-                <td th:text="${libro.id}"></td>
-                <td th:text="${libro.titulo}"></td>
-                <td th:text="${libro.autor}"></td>
-                <td th:text="${'$ ' + #numbers.formatDecimal(libro.precio, 0, 'COMMA', 0, 'POINT')}"></td>
-                <td th:text="${libro.stock}"></td>
-                <td th:text="${libro.activo ? 'Sí' : 'No'}"></td>
-                <td class="actions">
-                    <a class="btn btn-secondary" th:href="@{'/admin/libros/editar/' + ${libro.id}}">Editar</a>
-                    <form th:action="@{'/admin/libros/eliminar/' + ${libro.id}}" method="post">
-                        <button class="btn-danger" type="submit">Desactivar</button>
+                <tr th:each="libro : ${libros}">
+                    <td>
+                        <img th:src="${libro.imagenPortada}" alt="Portada" class="book-thumbnail">
+                    </td>
+                    <td style="color:var(--muted);" th:text="'#' + ${libro.id}"></td>
+                    <td>
+                        <div style="font-weight:600; margin-bottom:4px;" th:text="${libro.titulo}"></div>
+                        <div style="font-size:0.85rem; color:var(--muted);" th:text="${libro.autor}"></div>
+                    </td>
+                    <td th:text="${'$ ' + #numbers.formatDecimal(libro.precio, 0, 'COMMA', 0, 'POINT')}"></td>
+                    <td>
+                        <span th:if="${libro.stock >= 5}" th:text="${libro.stock}" style="font-weight: 600;"></span>
+                        <span th:if="${libro.stock < 5}" th:text="${libro.stock}" style="color: #fbbf24; font-weight: 700; background: rgba(245, 158, 11, 0.1); padding: 4px 8px; border-radius: 6px;"></span>
+                        <span th:if="${libro.stock < 5}" style="color:#fbbf24; font-size:0.8rem; margin-left:4px;">⚠️</span>
+                    </td>
+                    <td>
+                        <span class="status-badge activo" th:if="${libro.activo}">Activo</span>
+                        <span class="status-badge inactivo" th:unless="${libro.activo}">Inactivo</span>
+                    </td>
+                    <td style="text-align:right;">
+                        <div style="display:flex; gap:8px; justify-content:flex-end;">
+                            <a class="btn btn-outline" th:href="@{'/admin/libros/editar/' + ${libro.id}}">Editar</a>
+                            <form th:action="@{'/admin/libros/eliminar/' + ${libro.id}}" method="post" style="margin:0;">
+                                <button class="btn btn-danger" type="submit">Desactivar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="pagination" th:if="${librosPage.totalPages > 1}">
+            <div>
+                <a th:if="${librosPage.hasPrevious()}" th:href="@{/admin(pageLibros=${librosPage.number - 1}, pagePedidos=${pedidosPage.number})}">&laquo; Anterior</a>
+            </div>
+            <span>Página <strong th:text="${librosPage.number + 1}"></strong> de <strong th:text="${librosPage.totalPages}"></strong></span>
+            <div>
+                <a th:if="${librosPage.hasNext()}" th:href="@{/admin(pageLibros=${librosPage.number + 1}, pagePedidos=${pedidosPage.number})}">Siguiente &raquo;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pedidos Recientes -->
+    <div class="table-card" style="background: transparent; border: none; box-shadow: none; padding: 0;">
+        <div class="table-header" style="background: var(--panel); padding: 24px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 24px;">
+            <h2>Actividad de Pedidos Recientes</h2>
+        </div>
+
+        <div class="feed-list">
+            <div class="feed-card" th:each="pedido : ${pedidos}">
+                <div class="feed-main">
+                    <div class="feed-id" th:text="'#' + ${pedido.id}"></div>
+                    <div class="feed-customer">
+                        <span class="icon">👤</span>
+                        <span th:text="${pedido.nombreUsuario}"></span>
+                    </div>
+                    <div class="feed-date">
+                        <span style="opacity: 0.5;">🕒</span>
+                        <span th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}"></span>
+                    </div>
+                    <div class="feed-status">
+                        <span class="status-badge" th:classappend="${#strings.toLowerCase(pedido.estado)}" th:text="${pedido.estado}"></span>
+                    </div>
+                    <div class="feed-total" th:text="${'$ ' + #numbers.formatDecimal(pedido.total, 0, 'COMMA', 0, 'POINT')}"></div>
+                </div>
+                <div class="feed-actions">
+                    <a class="btn btn-outline" th:href="@{'/pedidos/' + ${pedido.id}}">Ticket</a>
+                    <button class="btn btn-outline" th:onclick="abrirModalLogistica([[${pedido.direccion}]], [[${pedido.ciudad}]], [[${pedido.codigoPostal}]], [[${pedido.telefono}]])">Envío</button>
+                    
+                    <form th:if="${pedido.estado.name() == 'PAGADO'}" th:action="@{'/admin/pedidos/estado/' + ${pedido.id}}" method="post" style="margin:0;">
+                        <input type="hidden" name="estado" value="ENVIADO">
+                        <button class="btn btn-blue" type="submit">Despachar</button>
                     </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+                    
+                    <form th:if="${pedido.estado.name() == 'PENDIENTE' || pedido.estado.name() == 'PAGADO' || pedido.estado.name() == 'CREADO'}" th:action="@{'/admin/pedidos/estado/' + ${pedido.id}}" method="post" style="margin:0;">
+                        <input type="hidden" name="estado" value="CANCELADO">
+                        <button class="btn btn-danger" type="submit">Cancelar</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(pedidos)}" style="text-align:center; padding: 60px; color:var(--muted); background: rgba(255,255,255,0.01); border-radius: 20px; border: 1px dashed rgba(255,255,255,0.1);">
+                <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.5;">📭</div>
+                <p>No hay pedidos recientes en el sistema.</p>
+            </div>
+        </div>
 
-    <div class="card">
-        <h2>Pedidos registrados</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Total</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="pedido : ${pedidos}">
-                <td th:text="${pedido.id}"></td>
-                <td th:text="${pedido.usuario.nombre}"></td>
-                <td th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}"></td>
-                <td th:text="${pedido.estado}"></td>
-                <td th:text="${'$ ' + #numbers.formatDecimal(pedido.total, 0, 'COMMA', 0, 'POINT')}"></td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(pedidos)}"><td colspan="5">No hay pedidos aún.</td></tr>
-            </tbody>
-        </table>
+        <div class="pagination" th:if="${pedidosPage.totalPages > 1}" style="background: var(--panel); padding: 20px 24px; border-radius: 20px; border: 1px solid var(--border); margin-top: 24px;">
+            <div>
+                <a th:if="${pedidosPage.hasPrevious()}" th:href="@{/admin(pageLibros=${librosPage.number}, pagePedidos=${pedidosPage.number - 1})}">&laquo; Anterior</a>
+            </div>
+            <span>Página <strong th:text="${pedidosPage.number + 1}"></strong> de <strong th:text="${pedidosPage.totalPages}"></strong></span>
+            <div>
+                <a th:if="${pedidosPage.hasNext()}" th:href="@{/admin(pageLibros=${librosPage.number}, pagePedidos=${pedidosPage.number + 1})}">Siguiente &raquo;</a>
+            </div>
+        </div>
     </div>
+</main>
+
+<!-- Modal de Logística -->
+<div id="logisticaModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="document.getElementById('logisticaModal').style.display='none'">&times;</span>
+    <h2>Información de Envío</h2>
+    <p><strong>Dirección</strong> <span id="modDir"></span></p>
+    <p><strong>Ciudad</strong> <span id="modCiu"></span></p>
+    <p><strong>Código Postal</strong> <span id="modCP"></span></p>
+    <p><strong>Teléfono</strong> <span id="modTel"></span></p>
+  </div>
 </div>
+
+<script>
+function abrirModalLogistica(dir, ciu, cp, tel) {
+    document.getElementById('modDir').textContent = dir || 'N/A';
+    document.getElementById('modCiu').textContent = ciu || 'N/A';
+    document.getElementById('modCP').textContent = cp || 'N/A';
+    document.getElementById('modTel').textContent = tel || 'N/A';
+    document.getElementById('logisticaModal').style.display = 'block';
+}
+window.onclick = function(event) {
+    var modal = document.getElementById('logisticaModal');
+    if (event.target == modal) { modal.style.display = "none"; }
+}
+</script>
+
 </body>
 </html>
