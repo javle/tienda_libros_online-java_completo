@@ -1,4 +1,4 @@
-# Libros Online - Plataforma E-Commerce Literaria 📚🚀
+# E-Commerce Spring Boot MVC: Enfoque en lógica de negocio compleja (Carrito, Pedidos, Checkout) 📚🚀
 
 Bienvenido al repositorio oficial de **Libros Online**, una plataforma de comercio electrónico de alto nivel diseñada para ofrecer una experiencia premium en la compra de libros, combinando una interfaz de usuario interactiva y moderna con un backend robusto y seguro a nivel empresarial.
 
